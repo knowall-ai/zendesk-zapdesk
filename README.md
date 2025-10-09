@@ -58,11 +58,11 @@ Upload the zip in Admin Center → Apps and integrations → Zendesk Support app
 
 - Tip presets: e.g. 100,1000,10000
 - Enable modes:
-  - showQrMode (QR/LNURL)
-  - showNwcMode (Nostr Wallet Connect)
+  - `showQrMode` (QR/LNURL)
+  - `showNwcMode` (Nostr Wallet Connect)
 - Agent address field key: e.g. `user.custom_fields.lightning_address`
 - Fallback address (optional)
-- Ticket post visibility: public or internal
+- Ticket post visibility: `public` or `internal`
 - Branding (optional): title/description
 
 ## Usage (end-user flow)
