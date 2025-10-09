@@ -7,8 +7,10 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 - **Ticket posting**: app auto-posts that the agent was tipped (public or internal, configurable).
 - **NWC balance**: if connected via NWC and supported, show wallet balance.
 
+<img width="1536" height="1024" alt="847b3c6c-7894-4c53-a2b3-486cc8b88b83" src="https://github.com/user-attachments/assets/6f42cd83-31d6-4116-a830-11cd6346b9de" />
+
 > Built as a packaged React app (Zendesk React scaffold baseline).  
-> No WebLN. No backend required.
+> No backend required.
 
 ---
 
