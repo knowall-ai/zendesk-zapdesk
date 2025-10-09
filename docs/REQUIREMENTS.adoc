@@ -1,0 +1,109 @@
+= Zapdesk – Requirements (Feature → User Story)
+KnowAll AI
+:toc:
+:icons: font
+
+== Feature: End-User Tipping Widget (QR + NWC)
+
+*User Story 1 — View tip options*
+As an end-user on a ticket, I can see presets and choose QR or NWC, and I can add a short message.
+
+*Acceptance Criteria*
+- *Given* I am viewing a ticket with Zapdesk enabled
+- *When* the panel loads
+- *Then* I see a message input (limited length, e.g., 140 chars)
+- *And* I see preset buttons (e.g., 100/1,000/10,000 sats)
+- *And* I see **Tip by QR** and **Connect wallet (NWC)** (when enabled)
+
+== Feature: Tip by QR / LNURL-pay
+
+*User Story 2 — Pay via QR*
+As an end-user, I can scan a QR or copy a payment string to send a tip.
+
+*Acceptance Criteria*
+- *Given* QR mode is enabled and the agent has a Lightning Address
+- *When* I choose a preset and click **Tip by QR**
+- *Then* I see a QR and a copyable BOLT11 or LNURL-pay string
+- *And* I see basic instructions for completing the payment
+- *And* I can click **I’ve paid** to acknowledge completion
+
+== Feature: Tip via NWC
+
+*User Story 3 — Connect wallet (NWC)*
+As an end-user, I can connect my wallet via NWC and tip programmatically, with my message included.
+
+*Acceptance Criteria*
+- *Given* NWC mode is enabled
+- *When* I click **Connect wallet (NWC)** and complete pairing
+- *Then* the app indicates I am connected
+- *And* *if supported by the wallet*, I see my **balance**
+
+*User Story 4 — Execute NWC tip*
+As an end-user, I can select a preset and send a tip via NWC, including my message.
+
+*Acceptance Criteria*
+- *Given* I’m connected via NWC
+- *When* I enter a message and choose a preset
+- *Then* the app executes the payment via NWC with the message in the memo
+- *And* on success the app shows confirmation
+- *And* on failure the app shows an error and offers QR fallback
+
+== Feature: Agent Payout Mapping
+
+*User Story 5 — Resolve agent address*
+As an admin, I can configure how the app finds the agent’s Lightning Address.
+
+*Acceptance Criteria*
+- *Given* I set a user field key (e.g., `user.custom_fields.lightning_address`)
+- *When* the panel loads for a ticket with an assigned agent
+- *Then* the app uses that field to resolve the payout address
+- *And* if missing, the app uses a configured fallback or hides tipping with guidance
+
+== Feature: Ticket Posting
+
+*User Story 6 — Post tip confirmation to ticket*
+As an admin, I want the app to post that the agent was tipped, including the end-user’s message.
+
+*Acceptance Criteria*
+- *Given* the app setting `postVisibility` is `public` or `internal`
+- *When* a tip completes (QR acknowledged or NWC success)
+- *Then* the app posts a message to the ticket using the configured visibility
+- *And* the post includes: amount, agent target, and the end-user message
+
+== Feature: Admin Configuration
+
+*User Story 7 — Presets and toggles*
+As an admin, I can configure presets and enable/disable modes.
+
+*Acceptance Criteria*
+- *Given* I set presets to `100,1000,10000`
+- *When* the app renders
+- *Then* I see those amounts as buttons
+- *And* if NWC is disabled, no NWC UI is shown
+- *And* if QR is disabled, no QR UI is shown
+
+*User Story 8 — Branding*
+As an admin, I can set a title/description for the panel header.
+
+*Acceptance Criteria*
+- *Given* I provide a custom title
+- *Then* the header reflects that title
+
+== Feature: Security & Operations
+
+*User Story 9 — Sandboxed & no custody*
+As a platform owner, I need the app to be safe and non-custodial.
+
+*Acceptance Criteria*
+- *Given* the app is installed
+- *Then* all code runs in the ZAF iframe
+- *And* payments occur only in the user’s wallet
+- *And* no server-side storage of NWC connect strings
+
+*User Story 10 — Build & package*
+As a developer, I can build and package the app for upload.
+
+*Acceptance Criteria*
+- *Given* I run `npm run build` and `zcli apps:package`
+- *Then* the output includes `/assets` (iframe.html, app.js, app.css)
+- *And* a distributable zip is produced for upload
