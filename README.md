@@ -76,11 +76,9 @@ Upload the zip in Admin Center → Apps and integrations → Zendesk Support app
 
 ## Security
 
-Iframe sandbox (ZAF v2). No custody; end-user’s wallet makes the payment.
-
-NWC connect strings are handled in browser; do not persist server-side.
-
-No WebLN.
+- Iframe sandbox (ZAF v2). No custody; end-user’s wallet makes the payment.
+- NWC connect strings are handled in browser; do not persist server-side.
+- No WebLN.
 
 ## License
 
