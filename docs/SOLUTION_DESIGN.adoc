@@ -1,0 +1,100 @@
+= Solution Design
+KnowAll AI
+:toc:
+:icons: font
+
+== Overview
+Zapdesk is a ZAF v2 sidebar app enabling end-users to tip agents over the Bitcoin Lightning Network. The MVP is client-only, wallet-agnostic, and supports:
+
+* **QR / LNURL-pay**: display target + QR for manual payment.
+* **Nostr Wallet Connect (NWC)**: programmatic tipping from the user’s wallet.
+* **End-user message**: included with the tip and appended to the ticket.
+* **Ticket posting**: app posts a confirmation to the ticket (public/internal).
+* **NWC balance**: show wallet balance when available.
+
+No WebLN. No backend required.
+
+== Architecture
+
+[cols="1,3"]
+|===
+| Component | Description
+
+| ZAF v2 React App
+| Packaged (iframe) React + TypeScript + Vite build to `/assets`. Uses ZAF SDK (`ZAFClient`) to read context and post to the ticket.
+
+| Agent Mapping
+| Resolve agent Lightning Address from a Zendesk **user custom field** (configurable key). Optional fallback address.
+
+| Payment – QR / LNURL
+| Render QR + copyable string for the selected preset amount using LNURL-pay or BOLT11 as provided/configured.
+
+| Payment – NWC
+| Use `@getalby/sdk` to pair a user wallet via NWC. Execute tips with an optional memo (includes end-user message + ticket/agent context). Attempt to read and display wallet **balance** via SDK (if the wallet exposes it).
+
+| End-User Message
+| Short text input bound to the payment memo (NWC). Always appended to the ticket post after success.
+
+| Ticket Posting
+| After success, app posts a message to the ticket via ZAF (visibility = `public` or `internal`, from settings). Contains amount, agent target, and the user message.
+|===
+
+== Key Flows
+
+=== A) Tip via QR / LNURL-pay
+. App loads; determines target agent and payout address.
+. User enters an optional message; selects a preset.
+. App displays QR + copyable payment string.
+. User pays with their wallet.
+. User clicks “I’ve paid” (manual acknowledge) → app posts to ticket with the message.
+
+=== B) Tip via NWC
+. User clicks **Connect wallet (NWC)** and pairs.
+. App attempts `getBalance()` (if available) → shows balance.
+. User enters an optional message; selects a preset.
+. App resolves an invoice/target and calls NWC to execute payment with memo.
+. On success:
+.. App refreshes NWC **balance** (if supported).
+.. App posts to ticket (message + details).
+. On failure: show clear error; offer QR fallback.
+
+== UI
+
+* Header with branding.
+* Agent context (avatar/name) + payout destination (masked).
+* Message textarea (limit, e.g., 140 chars).
+* Preset buttons (100 / 1,000 / 10,000 sats; configurable).
+* Actions: **Tip by QR**, **Connect wallet (NWC)** / **Tip now**.
+* Status banners; copy helpers; balance indicator (NWC).
+
+== ZAF Integration
+
+* `client.get(['ticket.id', 'ticket.assignee', 'currentUser'])`
+* Post to ticket:
+** Public reply append: `client.invoke('comment.appendText', msg)` then agent/end-user sends
+** or direct API call via `client.request()` to create a comment (visibility from settings)
+* Settings read via `client.metadata()` / app settings API.
+
+== Settings
+
+* `presets`: CSV sats amounts (e.g., `100,1000,10000`)
+* `showQrMode`: boolean
+* `showNwcMode`: boolean
+* `agentLightningFieldKey`: string (e.g., `user.custom_fields.lightning_address`)
+* `fallbackLightningAddress`: string (optional)
+* `postVisibility`: enum `public`|`internal`
+* `brandingTitle` / `brandingDescription` (optional)
+
+== Security
+
+* All code runs inside the ZAF iframe sandbox.
+* No custody; payments occur in the end-user’s wallet.
+* NWC connect strings treated as secrets (not logged; session-scoped by default).
+* Respect CSP; avoid unnecessary external scripts.
+
+== Build & Packaging
+
+* React + Vite + TypeScript → `/assets`: `iframe.html`, `app.js`, `app.css`
+* `manifest.json` points `support.ticket_sidebar` → `assets/iframe.html`
+* `zcli apps:package` to produce distributable zip
+
