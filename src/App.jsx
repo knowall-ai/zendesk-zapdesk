@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import QRCode from "qrcode";
-import {
-  lnurlFromLightningAddress,
-  lightningUriFromAddress,
-} from "./utils/lnurl";
 import I18n from "./lib/i18n";
 import LightningQR from "./qrCode";
+import {
+  initializeTicketData,
+  postTipComment,
+  resizeApp,
+  setupAutoResize,
+} from "./services/zendeskService";
+import { isValidLightningAddress } from "./services/lightningService";
 
 const TIP_AMOUNTS = [100, 1000, 10000]; // sats hardcoded
 
@@ -25,13 +27,10 @@ export default function App({ client }) {
     if (!client) return;
 
     // Resize once after load
-    client.invoke("resize", { height: "500px" });
+    resizeApp(client, "500px");
 
-    // Optional: auto-resize based on content height
-    const resizeInterval = setInterval(() => {
-      const contentHeight = document.documentElement.scrollHeight;
-      client.invoke("resize", { height: `${contentHeight}px` });
-    }, 500);
+    // Setup auto-resize based on content height
+    const resizeInterval = setupAutoResize(client);
 
     return () => clearInterval(resizeInterval);
   }, [client]);
@@ -41,46 +40,15 @@ export default function App({ client }) {
 
     async function init() {
       try {
-        // Step 1: Get ticket and assignee ID
-        const data = await client.get(["ticket.id", "ticket.assignee.user.id"]);
-        const ticketId = data["ticket.id"];
-        const assigneeId = data["ticket.assignee.user.id"];
-        console.log("[data]", data);
+        const data = await initializeTicketData(client);
 
-        setTicketId(ticketId);
-
-        if (!assigneeId) {
-          setError("This ticket has no assignee.");
-          setLoading(false);
-          return;
-        }
-
-        // Step 2: Fetch user profile via Zendesk API
-        const userResponse = await client.request({
-          url: `/api/v2/users/${assigneeId}.json`,
-          type: "GET",
-          dataType: "json",
-        });
-
-        const user = userResponse.user;
-        console.log("[user]", user);
-        setAssignee({
-          id: user.id,
-          name: user.name,
-          avatar: user.photo ? user.photo.content_url : "",
-        });
-
-        // Step 3: Get Lightning Address (custom field)
-        const lightningAddress =
-          user.user_fields?.lightning_address ||
-          user.user_fields?.lightningaddress ||
-          "";
-
-        setLightningAddress(lightningAddress);
+        setTicketId(data.ticketId);
+        setAssignee(data.assignee);
+        setLightningAddress(data.lightningAddress);
         setLoading(false);
       } catch (err) {
         console.error("[Zapdesk] Error initializing:", err);
-        setError("Failed to load assignee info.");
+        setError(err.message || "Failed to load assignee info.");
         setLoading(false);
       }
     }
@@ -94,17 +62,20 @@ export default function App({ client }) {
     setQrDataUrl("");
     setLnurlString("");
 
-    if (!lightningAddress) {
+    if (!isValidLightningAddress(lightningAddress)) {
       setError("No Lightning Address found for the agent.");
       return;
     }
 
+    // Note: QR generation is handled by the LightningQR component
+    // Uncomment below if you want to generate QR in the parent component
     // try {
-    //   const lnurl = await lightningUriFromAddress(lightningAddress, amount);
-    //   setLnurlString(lnurl);
-    //   console.log("[lnurl]", lnurl);
-    //   const qr = await QRCode.toDataURL(lnurl);
-    //   setQrDataUrl(qr);
+    //   const { qrDataUrl, lnurlString } = await generateLightningQR(
+    //     lightningAddress,
+    //     amount
+    //   );
+    //   setQrDataUrl(qrDataUrl);
+    //   setLnurlString(lnurlString);
     // } catch (err) {
     //   console.error(err);
     //   setError("Failed to generate LNURL / QR.");
@@ -115,33 +86,24 @@ export default function App({ client }) {
     if (!ticketId) return setError("Ticket ID not found");
     if (!selectedAmount) return setError("No tip amount selected");
 
-    const body = `Tip: ${selectedAmount} sats\nAgent: ${
-      assignee.name
-    }\nMessage: ${message || "(none)"}\nLightning Address: ${lightningAddress}`;
-
     try {
-      // Update the ticket by appending a public comment from current user
-      await client.request({
-        url: `/api/v2/tickets/${ticketId}.json`,
-        type: "PUT",
-        contentType: "application/json",
-        data: JSON.stringify({ ticket: { comment: { body, public: true } } }),
-      });
-
-      // Optionally show a small notification to the user
-      client.invoke(
-        "notify",
-        `Thanks! Your tip of ${selectedAmount} sats has been recorded on the ticket.`
+      await postTipComment(
+        client,
+        ticketId,
+        selectedAmount,
+        assignee.name,
+        message,
+        lightningAddress
       );
 
-      // reset UI
+      // Reset UI
       setSelectedAmount(null);
       setQrDataUrl("");
       setLnurlString("");
       setMessage("");
     } catch (err) {
       console.error("Failed to post comment", err);
-      setError("Failed to post the comment to the ticket.");
+      setError(err.message || "Failed to post the comment to the ticket.");
     }
   }
 
