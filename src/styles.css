@@ -74,6 +74,9 @@
   gap: 12px;
   margin-top: 12px;
 }
+.zd-message-input {
+  margin-top: 16px;
+}
 .zd-qr-preview img {
   width: 160px;
   height: 160px;

@@ -191,6 +191,22 @@ export default function App({ client }) {
           </div>
         )}
 
+        {selectedAmount && (
+          <div className="zd-message-input">
+            <label htmlFor="tip-message" className="zd-label">
+              Add a message (optional)
+            </label>
+            <textarea
+              id="tip-message"
+              className="zd-textarea"
+              placeholder="Thank you for your help!"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={3}
+            />
+          </div>
+        )}
+
         <div className="zd-actions">
           <button className="zd-btn zd-btn--primary" onClick={markAsPaid}>
             Mark as Paid
