@@ -37732,7 +37732,7 @@ function App(_ref) {
           console.log("[data]", data);
           setTicketId(_ticketId);
           if (!assigneeId) {
-            setError("This ticket has no assignee.");
+            setError("In order to send a zap tip the ticket must be assigned to an agent.");
             setLoading(false);
             return;
           }
@@ -37875,7 +37875,7 @@ function App(_ref) {
     onClick: markAsPaid
   }, "Mark as Paid"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("footer", {
     className: "zd-footer"
-  }, "Payments via Lightning (LNURL-pay QR). This app does not verify on-chain payments \u2014 user confirms manually."));
+  }, "This widget uses the Bitcoin Lightning to send tips directly to your support agent \u2014 user confirms manually."));
 }
 
 /***/ }),

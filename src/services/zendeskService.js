@@ -18,7 +18,7 @@ export async function initializeTicketData(client) {
     console.log("[Zendesk Service] Ticket data:", data);
 
     if (!assigneeId) {
-      throw new Error("This ticket has no assignee.");
+      throw new Error("In order to send a zap tip the ticket must be assigned to an agent");
     }
 
     // Step 2: Fetch user profile via Zendesk API

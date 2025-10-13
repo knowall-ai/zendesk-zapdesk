@@ -8,8 +8,16 @@
 }
 .zd-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 12px;
+}
+.zd-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+  text-align: center;
 }
 .zd-agent {
   display: flex;
@@ -73,6 +81,7 @@
   display: flex;
   gap: 12px;
   margin-top: 12px;
+  justify-content: center;
 }
 .zd-message-input {
   margin-top: 16px;
