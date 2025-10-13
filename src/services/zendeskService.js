@@ -78,15 +78,20 @@ export async function postTipComment(
       message || "(none)"
     }\nLightning Address: ${lightningAddress}`;
 
-    // Update the ticket by appending a public comment
+    // Get the comment visibility setting from app settings
+    const settings = await client.metadata();
+    const privateComments = settings.settings.private_comments || false;
+    const isPublic = !privateComments; // If checkbox is checked, comments are private
+
+    // Update the ticket by appending a comment with configured visibility
     await client.request({
       url: `/api/v2/tickets/${ticketId}.json`,
       type: "PUT",
       contentType: "application/json",
-      data: JSON.stringify({ ticket: { comment: { body, public: true } } }),
+      data: JSON.stringify({ ticket: { comment: { body, public: isPublic } } }),
     });
 
-    console.log("[Zendesk Service] Tip comment posted successfully");
+    console.log(`[Zendesk Service] Tip comment posted successfully (${isPublic ? 'public' : 'private'})`);
 
     // Show notification to the user
     await client.invoke(
