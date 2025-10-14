@@ -53,5 +53,18 @@ module.exports = {
   ],
   optimization: {
     minimize: true,
+    minimizer: [
+      (compiler) => {
+        const TerserPlugin = require('terser-webpack-plugin');
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false, // Disable license file extraction
+        }).apply(compiler);
+      },
+    ],
   },
 };

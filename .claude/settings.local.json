@@ -12,7 +12,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh pr create --title \"Add Zapdesk Lightning Tip App for Zendesk\" --body \"$(cat <<''EOF''\n## Summary\n\nThis PR introduces Zapdesk, a Zendesk app that enables Lightning Network tips for support agents. The app allows customers to send Bitcoin tips to support agents via Lightning addresses.\n\n### Key Features\n\n- **Lightning Network Integration**: Send tips using Lightning addresses configured in agent profiles\n- **QR Code Generation**: Display QR codes for easy mobile wallet scanning\n- **Custom Tip Amounts**: Support for predefined and custom tip amounts\n- **Configurable Comment Visibility**: Admin setting to control whether tip comments are public or private\n- **LNURL Support**: Full LNURL protocol implementation for Lightning payments\n- **Service Layer Architecture**: Clean separation of concerns with dedicated services for Zendesk and Lightning operations\n\n### Changes Included\n\n- Initial Zendesk App Framework setup with React\n- Lightning address validation and LNURL payment flow\n- QR code generation for Lightning invoices\n- Message input for personalized tip messages\n- Refactored business logic into service layer (zendeskService.js and lightningService.js)\n- Added checkbox parameter for comment visibility control\n\n### Technical Details\n\n- Built using Zendesk Apps Framework v2.0\n- React 18 for UI components\n- Webpack for bundling and development server\n- QRCode library for invoice display\n- Bech32 encoding for Lightning addresses\n\n## Test Plan\n\n- [ ] Install app in Zendesk Support instance\n- [ ] Configure Lightning addresses in agent user profiles\n- [ ] Test sending tips with predefined amounts\n- [ ] Test sending tips with custom amounts\n- [ ] Verify QR code generation and scanning\n- [ ] Test comment visibility setting (public vs private)\n- [ ] Verify tip comments appear correctly on tickets\n- [ ] Test with agents who don''t have Lightning addresses configured\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\nEOF\n)\")",
-      "Bash(where gh)"
+      "Bash(where gh)",
+      "Bash(cp:*)",
+      "Bash(tar:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []

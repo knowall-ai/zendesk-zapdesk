@@ -53,6 +53,19 @@ zcli apps:package      # produces distributable .zip
 
 Upload the zip in Admin Center → Apps and integrations → Zendesk Support apps → Upload app.
 
+## Marketplace Submission
+
+To submit to the Zendesk Marketplace, you'll need:
+
+- **At least 3 screenshots** showing the app in action
+  - Recommended: App sidebar view, QR code display, tip confirmation, settings panel
+  - Size: 1024x768px or larger
+  - Format: PNG or JPG
+- **Manifest with `"private": false`** (already configured)
+- **No LICENSE.txt files in assets** (webpack configured to exclude)
+
+Add screenshots by placing them in a `screenshots/` folder or as directed by Zendesk's submission process.
+
 ## Configure (App settings)
 
 - Tip presets: e.g. 100,1000,10000
