@@ -111,6 +111,7 @@ export default function App({ client }) {
   return (
     <div className="zd-container">
       <header className="zd-header">
+        <h2 className="zd-title">Tip the agent instantly with Bitcoin Lightning</h2>
         <div className="zd-agent">
           {assignee.avatar ? (
             <img src={assignee.avatar} alt="agent" className="zd-avatar" />
@@ -177,8 +178,7 @@ export default function App({ client }) {
       </div>
 
       <footer className="zd-footer">
-        Payments via Lightning (LNURL-pay QR). This app does not verify on-chain
-        payments — user confirms manually.
+        This widget uses the Bitcoin Lightning to send tips directly to your support agent — Please click on the 'Mark as Paid' button manually.
       </footer>
     </div>
   );

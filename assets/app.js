@@ -37732,7 +37732,7 @@ function App(_ref) {
           console.log("[data]", data);
           setTicketId(_ticketId);
           if (!assigneeId) {
-            setError("This ticket has no assignee.");
+            setError("In order to send a zap tip the ticket must be assigned to an agent.");
             setLoading(false);
             return;
           }
