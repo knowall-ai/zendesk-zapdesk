@@ -42,16 +42,6 @@ const LightningInvoiceQR = ({ address, amountSats, size = 220 }) => {
   return (
     <div style={{ textAlign: "center" }}>
       <QRCodeSVG value={invoice} size={size} />
-      {/* <p
-        style={{
-          marginTop: "8px",
-          fontFamily: "monospace",
-          fontSize: "12px",
-          wordBreak: "break-all",
-        }}
-      >
-        {invoice}
-      </p> */}
     </div>
   );
 };

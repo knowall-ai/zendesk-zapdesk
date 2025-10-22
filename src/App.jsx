@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import I18n from "./lib/i18n";
 import LightningQR from "./qrCode";
 import {
   initializeTicketData,
@@ -65,20 +64,6 @@ export default function App({ client }) {
       setError("No Lightning Address found for the agent.");
       return;
     }
-
-    // Note: QR generation is handled by the LightningQR component
-    // Uncomment below if you want to generate QR in the parent component
-    // try {
-    //   const { qrDataUrl, lnurlString } = await generateLightningQR(
-    //     lightningAddress,
-    //     amount
-    //   );
-    //   setQrDataUrl(qrDataUrl);
-    //   setLnurlString(lnurlString);
-    // } catch (err) {
-    //   console.error(err);
-    //   setError("Failed to generate LNURL / QR.");
-    // }
   }
 
   async function markAsPaid() {

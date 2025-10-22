@@ -76,7 +76,7 @@ Upload the zip in Admin Center → Apps and integrations → Zendesk Support app
 - Iframe sandbox (ZAF v2). No custody; end-user’s wallet makes the payment.
 - No WebLN.
 
-## Pre-requisite: Custom Field
+## Prerequisite: Custom Field
 
 - Add custom field
   - go to - https://{subdomain}.zendesk.com/admin/people/configuration/user_fields
