@@ -7,7 +7,10 @@
       "Bash(npm run dev)",
       "Bash(git rm:*)",
       "Bash(gh api:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Read(//c/SkytechClouds/Skytech Cloud/Akash Skytech - Documents/Eir Evo/PharmaFlowBenReview/BelfastTrustPharmaFlow/docs/**)",
+      "Bash(gem list:*)",
+      "Bash(asciidoctor-pdf:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,195 @@
+== Deployments
+
+=== Build Process
+
+**Development Build:**
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server with hot reload
+npm run dev
+
+# Build for production
+npm run build
+```
+
+**Production Build:**
+
+```bash
+# Clean previous builds
+npm run clean
+
+# Build optimized production assets
+npm run build
+
+# Package Zendesk app
+zcli apps:package
+```
+
+**Build Output:**
+
+* `/dist/assets/iframe.html` - Main application entry point
+* `/dist/assets/app.js` - Bundled JavaScript (React + TypeScript)
+* `/dist/assets/app.css` - Compiled CSS styles
+* `/dist/manifest.json` - Zendesk app manifest
+* `/dist/translations/` - Localization files
+* `zapdesk-{version}.zip` - Packaged app for upload
+
+=== Environment Deployment
+
+**Zendesk Sandbox Environment:**
+
+1. Build the application with `npm run build`
+2. Package the app with `zcli apps:package`
+3. Upload to Zendesk Sandbox:
+   ```bash
+   zcli apps:create dist/
+   ```
+4. Test in Zendesk sandbox ticket sidebar
+5. Verify ZAF client integration
+6. Test all payment workflows
+
+**Zendesk Production Environment:**
+
+1. Complete UAT testing in Sandbox
+2. Obtain deployment approval from stakeholders
+3. Schedule deployment window (low-traffic hours recommended)
+4. Create backup of current production app version
+5. Upload new version to production:
+   ```bash
+   zcli apps:update --path dist/
+   ```
+6. Verify deployment success
+7. Perform smoke testing in production
+8. Monitor for errors in first 24 hours
+9. Notify end-users of new version
+
+=== Configuration Management
+
+**App Settings (manifest.json):**
+
+```json
+{
+  "parameters": [
+    {
+      "name": "presets",
+      "type": "text",
+      "default": "100,1000,10000",
+      "required": false
+    },
+    {
+      "name": "showQrMode",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "name": "showNwcMode",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "name": "agentLightningFieldKey",
+      "type": "text",
+      "default": "user.custom_fields.lightning_address"
+    },
+    {
+      "name": "fallbackLightningAddress",
+      "type": "text",
+      "required": false
+    },
+    {
+      "name": "postVisibility",
+      "type": "dropdown",
+      "default": "public"
+    }
+  ]
+}
+```
+
+**Deployment Checklist:**
+
+- [ ] Code review completed and approved
+- [ ] All unit tests passing
+- [ ] Integration tests successful
+- [ ] Build artifacts generated successfully
+- [ ] App packaged with correct version number
+- [ ] Settings configured for target environment
+- [ ] Lightning Address field configured in Zendesk
+- [ ] Zendesk custom field created (if required)
+- [ ] Backup of current version created
+- [ ] Rollback plan documented
+- [ ] Deployment window communicated to users
+- [ ] Post-deployment testing plan ready
+
+=== Version Management
+
+**Versioning Strategy:**
+
+* **Major version (X.0.0)**: Breaking changes, major feature releases
+* **Minor version (0.X.0)**: New features, non-breaking changes
+* **Patch version (0.0.X)**: Bug fixes, minor updates
+
+**Changelog Maintenance:**
+
+* Document all changes in `CHANGELOG.md`
+* Include migration notes for breaking changes
+* Reference GitHub issues/pull requests
+* Provide upgrade instructions
+
+**Git Tagging:**
+
+```bash
+# Tag release version
+git tag -a v1.0.0 -m "Release version 1.0.0"
+
+# Push tags to remote
+git push origin --tags
+```
+
+=== Monitoring and Maintenance
+
+**Application Health Monitoring:**
+
+* Monitor ZAF client errors via browser console
+* Track payment success/failure rates
+* Monitor NWC connection reliability
+* Track ticket posting errors
+* Monitor app load times and performance
+
+**User Feedback Collection:**
+
+* Monitor Zendesk app reviews and ratings
+* Collect user feedback via support channels
+* Track feature requests and enhancement ideas
+* Analyze usage patterns and adoption metrics
+
+**Maintenance Schedule:**
+
+* **Weekly**: Review error logs and user feedback
+* **Monthly**: Dependency updates and security patches
+* **Quarterly**: Feature releases and major updates
+* **As needed**: Critical bug fixes and security updates
+
+=== Rollback Procedures
+
+**Emergency Rollback:**
+
+1. Identify critical issue requiring rollback
+2. Notify stakeholders of rollback decision
+3. Restore previous version from backup:
+   ```bash
+   zcli apps:update --path backup/zapdesk-{previous-version}.zip
+   ```
+4. Verify rollback successful
+5. Communicate rollback to users
+6. Investigate root cause of issue
+7. Plan hotfix or corrected deployment
+
+**Rollback Validation:**
+
+* Test core functionality after rollback
+* Verify settings are preserved
+* Check user data integrity
+* Monitor for additional errors

@@ -1,0 +1,24 @@
+== Contact Information
+
+**KnowAll AI Support:**
+
+* Technical Support: support@knowallai.com
+* General Inquiries: info@knowallai.com
+* GitHub Issues: https://github.com/knowall-ai/zendesk-zapdesk/issues
+
+**Project Team:**
+
+* Lead Developer: Akash Jadhav - Akash.Jadhav@knowall.ai
+* Product Manager: Ben Weeks - Ben.Weeks@KnowAll.ai
+
+**Business Hours:**
+
+* Monday - Friday: 9:00 AM - 6:00 PM IST
+* Saturday - Sunday: Limited support for critical issues
+* Emergency Contact: Please email with [URGENT] in subject line
+
+**Community Resources:**
+
+* Documentation: https://docs.knowallai.com/zapdesk
+* Lightning Network Resources: https://lightning.network
+* Zendesk Developer Portal: https://developer.zendesk.com

@@ -1,0 +1,719 @@
+== Frequently Asked Questions
+
+This document provides answers to frequently asked questions about the Zapdesk Lightning Network Tipping Application. It is organized by stakeholder groups and common scenarios to help users quickly find the information they need.
+
+**Target Audiences:**
+
+- Support agents receiving tips
+- Zendesk administrators
+- System administrators and IT support
+- Project stakeholders and management
+
+=== General Usage
+
+==== Q: What is Zapdesk and how does it work?
+
+**A:** Zapdesk is a Zendesk sidebar application that enables ticket requesters (customers) to tip support agents using Bitcoin's Lightning Network:
+
+**Key Features:**
+
+1. **QR/LNURL-pay**: Display QR code for manual wallet payments
+2. **Custom Messages**: Users can include personalized thank-you messages
+3. **Ticket Integration**: Tips are recorded in ticket comments (public or internal)
+4. **Balance Display**: View wallet balance when using NWC (if supported by wallet)
+
+**How It Works:**
+
+1. User opens support ticket in Zendesk
+2. Zapdesk app appears in ticket sidebar
+3. Agent's Lightning Address is automatically resolved
+4. User selects tip amount from presets (e.g., 100, 1,000, 10,000 sats)
+5. User can add optional message
+6. Payment via QR code scan or NWC direct payment
+7. Confirmation posted to ticket as comment
+
+==== Q: What is the Lightning Network?
+
+**A:** The Lightning Network is a "layer 2" payment protocol built on top of Bitcoin:
+
+**Key Characteristics:**
+
+- **Instant Payments**: Transactions settle in seconds, not minutes/hours
+- **Low Fees**: Minimal transaction costs (often less than 1 cent)
+- **Scalability**: Handles millions of transactions per second
+- **Micropayments**: Enables tiny payments (even sub-cent amounts)
+- **Bitcoin-Native**: Secured by Bitcoin blockchain
+
+**Why Lightning for Tipping:**
+
+- Traditional payment systems have high fees that make small tips uneconomical
+- Credit cards charge 2-3% + fixed fees, making $1-5 tips impractical
+- Lightning enables true micropayments with negligible fees
+- No intermediaries or payment processors required
+- Global and permissionless - works anywhere
+
+==== Q: What is a Lightning Address?
+
+**A:** A Lightning Address is a human-readable identifier for receiving Lightning payments, similar to an email address:
+
+**Format:** `username@domain.com`
+
+**Examples:**
+- `alice@getalby.com`
+- `bob@walletofsatoshi.com`
+- `support@company.com`
+
+**How It Works:**
+
+1. User enters Lightning Address in their Zendesk profile
+2. Zapdesk resolves the address to payment endpoint (LNURL-pay)
+3. Generates payment invoice for selected amount
+4. Creates QR code for scanning or direct NWC payment
+
+**Setting Up Lightning Address:**
+
+- Most Lightning wallets provide free Lightning Addresses
+- Popular providers: Alby, Wallet of Satoshi, Strike, Cash App
+- Can also self-host using LNbits or custom LNURL server
+
+==== Q: How do I tip an agent using QR code?
+
+**A:** QR code tipping process:
+
+**Prerequisites:**
+
+- Lightning-compatible wallet app (Alby, Wallet of Satoshi, Phoenix, Breez, etc.)
+- Small amount of Bitcoin/sats in wallet
+
+**Steps:**
+
+1. Open ticket in Zendesk where agent has responded
+2. Zapdesk app appears in ticket sidebar showing agent info
+3. Select tip amount from preset buttons (e.g., 1,000 sats)
+4. Optionally add personal thank-you message (e.g., "Thanks for the great support!")
+5. Click **"Tip by QR"** button
+6. QR code displays with payment string
+7. Open your Lightning wallet app
+8. Scan QR code with wallet camera
+9. Confirm payment in wallet app
+10. Click **"I've Paid"** button in Zapdesk
+11. Confirmation message posts to ticket
+
+**Tip:** You can also copy the payment string and paste it into your wallet manually.
+
+==== Q: How do I tip using Nostr Wallet Connect (NWC)?
+
+**A:** NWC enables direct programmatic payments from your wallet:
+
+**Prerequisites:**
+
+- NWC-compatible wallet (Alby, Mutiny, Coinos, etc.)
+- NWC connection string from your wallet
+
+**First-Time Setup:**
+
+1. Open your Lightning wallet settings
+2. Find "Nostr Wallet Connect" or "NWC" section
+3. Generate NWC connection string (looks like `nostr+walletconnect://...`)
+4. Copy connection string
+
+**Tipping with NWC:**
+
+1. Open ticket in Zendesk
+2. Click **"Connect Wallet (NWC)"** in Zapdesk sidebar
+3. Paste your NWC connection string
+4. Click **"Connect"**
+5. Wallet balance displays (if supported by wallet)
+6. Select tip amount from presets
+7. Add optional message
+8. Click **"Tip Now"** button
+9. Payment executes automatically
+10. Balance updates and confirmation posts to ticket
+
+**Benefits:**
+
+- No scanning QR codes
+- Faster payment experience
+- See wallet balance in app
+- One-click tipping after initial setup
+
+==== Q: Is my payment information secure?
+
+**A:** Yes, Zapdesk follows security best practices:
+
+**Security Measures:**
+
+1. **No Custody**: Zapdesk never holds your Bitcoin or has access to your wallet
+2. **NWC Secrets**: Connection strings are stored in session storage only (not logged or transmitted to servers)
+3. **ZAF Sandbox**: App runs in Zendesk's isolated iframe sandbox
+4. **No Backend**: Client-only app with no server to be compromised
+5. **CSP Compliance**: Strict Content Security Policy prevents injection attacks
+6. **HTTPS Only**: All communications encrypted via HTTPS
+
+**What Zapdesk CAN Access:**
+
+- Ticket context (ticket ID, agent name, user info)
+- Agent's Lightning Address (from public user profile)
+- Payment amounts and messages you enter
+
+**What Zapdesk CANNOT Access:**
+
+- Your wallet private keys or seed phrase
+- Your full wallet balance (unless explicitly exposed via NWC getBalance)
+- Payment details beyond what you explicitly authorize
+- Your NWC connection string after session ends
+
+==== Q: What happens to my tip after I send it?
+
+**A:** The tip flow after payment:
+
+**Immediate Actions:**
+
+1. **Payment Execution**: Sats transferred from your wallet to agent's Lightning Address
+2. **Confirmation**: Payment success/failure confirmation displayed in app
+3. **Ticket Comment**: App posts confirmation to ticket with:
+   - Tip amount (e.g., "1,000 sats")
+   - Your personal message (if provided)
+   - Agent information
+   - Timestamp
+4. **Balance Update**: If using NWC, wallet balance refreshes
+
+**Comment Visibility:**
+
+- **Public Comment**: Visible to ticket requester and agent (default)
+- **Internal Note**: Only visible to support staff (if configured)
+
+**Agent Receives:**
+
+- Bitcoin/sats in their Lightning wallet immediately
+- Notification from their wallet app
+- Ticket comment showing appreciation
+
+**No Reversals:**
+
+- Lightning payments are final and cannot be reversed
+- Ensure correct amount and agent before sending
+- Contact agent directly if payment sent in error
+
+=== Wallet Setup
+
+==== Q: What Lightning wallet should I use?
+
+**A:** Recommended wallets by experience level:
+
+**Beginners (Custodial - Easy Setup):**
+
+[cols="2,3,2",options="header"]
+|===
+|Wallet |Description |Best For
+|**Wallet of Satoshi** |Simplest Lightning wallet, iOS/Android |First-time users, casual tippers
+|**Alby** |Browser extension + mobile, great NWC support |Browser-based tipping, web users
+|**Strike** |Fiat on-ramp, easy Bitcoin purchase |Users wanting to buy Bitcoin easily
+|**Cash App** |Popular payment app with Bitcoin support |US users already on Cash App
+|===
+
+**Intermediate (Hybrid - Balance of Ease & Control):**
+
+[cols="2,3,2",options="header"]
+|===
+|Wallet |Description |Best For
+|**Phoenix** |Self-custodial, automated channel management |Users wanting more control
+|**Breez** |Self-custodial, full Lightning node in pocket |Technical users, privacy-focused
+|**Blink (Bitcoin Beach)** |Community-focused, good for regions |Community tipping, international
+|===
+
+**Advanced (Self-Custodial - Full Control):**
+
+[cols="2,3,2",options="header"]
+|===
+|Wallet |Description |Best For
+|**LNbits** |Self-hosted wallet server |Power users, developers
+|**Umbrel** |Full Bitcoin/Lightning node |Technical users, maximum sovereignty
+|**Voltage** |Cloud-hosted Lightning node |Users wanting self-custody without hardware
+|===
+
+**NWC Support:**
+
+- ✅ Full NWC: Alby, Mutiny, Coinos, LNbits
+- ⚠️ Limited: Some wallets may not support balance queries
+- ❌ No NWC: Wallet of Satoshi, Phoenix, Breez (use QR code instead)
+
+==== Q: How do I get Bitcoin to tip with?
+
+**A:** Several ways to acquire Bitcoin for tipping:
+
+**Buy Bitcoin Directly:**
+
+1. **Strike**: Buy Bitcoin with bank account or debit card (US, EU, select countries)
+2. **Cash App**: Add money, convert to Bitcoin (US only)
+3. **Swan Bitcoin**: Recurring Bitcoin purchases
+4. **River Financial**: Buy and hold Bitcoin, automatic withdrawals to Lightning
+
+**Receive from Others:**
+
+- Have someone send you sats to your Lightning Address
+- Earn Bitcoin through work, freelancing, or content creation
+- Participate in Bitcoin community giveaways ("sats giveaways")
+
+**Bitcoin ATMs:**
+
+- Find Bitcoin ATM near you (CoinATMRadar.com)
+- Buy Bitcoin, send to your wallet address
+- May have higher fees than online purchases
+
+**Starting Small:**
+
+- Many wallets allow deposits as low as $1-5
+- 10,000 sats ≈ $2-5 (varies with Bitcoin price)
+- Start small to learn, increase as comfortable
+
+**Price Awareness:**
+
+- 1 Bitcoin = 100,000,000 sats
+- Sats are convenient for small payments
+- Example: 1,000 sats ≈ $0.20-$0.50 (price varies)
+
+==== Q: How do I set up my Lightning wallet for NWC?
+
+**A:** NWC setup varies by wallet:
+
+**Alby (Recommended for NWC):**
+
+1. Install Alby browser extension or mobile app
+2. Create/import wallet
+3. Go to Settings → Wallet Connect
+4. Click "Create Connection"
+5. Set spending limits if desired
+6. Copy connection string (starts with `nostr+walletconnect://`)
+7. Paste into Zapdesk when prompted
+
+**Mutiny Wallet:**
+
+1. Open Mutiny wallet (https://app.mutinywallet.com)
+2. Navigate to Settings → Connections
+3. Create new NWC connection
+4. Configure permissions (payment execution, balance read)
+5. Copy connection string
+6. Use in Zapdesk
+
+**LNbits (Self-Hosted):**
+
+1. Access your LNbits instance
+2. Install Nostr Wallet Connect extension
+3. Create new NWC connection
+4. Set budget and expiry
+5. Copy connection string
+6. Use in Zapdesk
+
+**Connection String Security:**
+
+- Treat NWC connection strings like passwords
+- Set spending limits to minimize risk
+- Use separate connection for tipping vs. main wallet
+- Revoke connections when no longer needed
+- Don't share connection strings publicly
+
+=== Agent Configuration
+
+==== Q: How do agents set up their Lightning Address?
+
+**A:** Agents configure Lightning Address in Zendesk user profile:
+
+**Prerequisites:**
+
+1. Get Lightning wallet that provides Lightning Address
+2. Note your Lightning Address (e.g., `agent@getalby.com`)
+3. Test receive payment to verify address works
+
+**Configuration in Zendesk:**
+
+1. Zendesk admin creates custom user field:
+   - Field Type: Text
+   - Field Key: `lightning_address` (or as configured in Zapdesk settings)
+   - Visibility: Public or agents only
+2. Agents update their user profile:
+   - Go to profile settings
+   - Find Lightning Address custom field
+   - Enter Lightning Address (e.g., `username@domain.com`)
+   - Save changes
+
+**Verification:**
+
+1. Open test ticket assigned to agent
+2. Check Zapdesk sidebar shows agent's Lightning Address
+3. Send small test tip (e.g., 10 sats) to verify
+4. Confirm agent receives payment in wallet
+
+**Fallback Address:**
+
+- Zendesk admin can configure fallback Lightning Address in Zapdesk settings
+- Used when agent hasn't set personal Lightning Address
+- Useful for team wallets or temporary setup
+
+==== Q: Can multiple agents share one Lightning Address?
+
+**A:** Yes, but with limitations:
+
+**Shared Wallet Approach:**
+
+**Pros:**
+- Simple setup - one address for all agents
+- Good for small teams or testing
+- Centralized receiving (team wallet)
+
+**Cons:**
+- No individual tip tracking per agent
+- All tips go to same wallet
+- Requires manual distribution to individual agents
+
+**Implementation:**
+
+1. Create team Lightning wallet (e.g., LNbits)
+2. Set team Lightning Address as fallback in Zapdesk settings
+3. Agents without personal address use fallback
+4. Manually track and distribute tips periodically
+
+**Individual Address Approach (Recommended):**
+
+**Pros:**
+- Each agent receives tips directly
+- Clear attribution and tracking
+- Better agent motivation
+- Automatic distribution (no manual work)
+
+**Cons:**
+- Requires each agent to set up wallet
+- More initial configuration
+- Agents must manage own wallets
+
+**Recommendation:**
+
+- Start with shared address for testing
+- Migrate to individual addresses for production
+- Provides best experience for agents and users
+
+==== Q: What if an agent doesn't have a Lightning Address?
+
+**A:** Fallback handling:
+
+**Zapdesk Behavior:**
+
+1. Checks ticket assignee's user profile for Lightning Address
+2. If not found, uses fallback Lightning Address from settings
+3. If no fallback configured, displays error message
+
+**Error Message Example:**
+```
+"Lightning Address not configured for this agent.
+Please contact support to set up tipping."
+```
+
+**Solutions:**
+
+**Option 1: Configure Fallback Address (Quick)**
+- Admin sets fallback Lightning Address in Zapdesk settings
+- All tips for agents without addresses go to fallback
+- Good for initial deployment
+
+**Option 2: Agent Sets Personal Address (Best)**
+- Agent creates Lightning wallet
+- Agent adds Lightning Address to Zendesk profile
+- Receives tips directly
+
+**Option 3: Disable App for Specific Agents**
+- Zendesk admin can control app visibility
+- Hide Zapdesk for agents who don't want tips
+- Prevents confusion for users
+
+=== Administration
+
+==== Q: How do I install Zapdesk in my Zendesk instance?
+
+**A:** Installation process:
+
+**Prerequisites:**
+
+- Zendesk admin access
+- Zapdesk app package (`zapdesk-{version}.zip`)
+- Custom user field for Lightning Address (recommended)
+
+**Installation Steps:**
+
+1. **Create Custom Field (if not exists):**
+   - Admin Center → People → Configuration → User fields
+   - Add custom field: `lightning_address` (type: Text)
+   - Make editable by agents
+
+2. **Upload Zapdesk App:**
+   - Admin Center → Apps and integrations → Apps → Zendesk Support apps
+   - Click "Upload private app"
+   - Select `zapdesk-{version}.zip`
+   - Click "Upload"
+
+3. **Configure Settings:**
+   - Preset amounts (CSV): `100,1000,10000`
+   - Enable QR mode: Yes
+   - Enable NWC mode: Yes
+   - Lightning field key: `user.custom_fields.lightning_address`
+   - Fallback address: `team@company.com` (optional)
+   - Comment visibility: Public or Internal
+
+4. **Install to Ticket Sidebar:**
+   - Select installation location: Ticket Sidebar
+   - Choose visibility: All agents or specific groups
+   - Click "Install"
+
+5. **Test Installation:**
+   - Open test ticket
+   - Verify Zapdesk appears in sidebar
+   - Test tipping workflow
+
+==== Q: How do I configure Zapdesk settings?
+
+**A:** Settings configuration in Zendesk Admin:
+
+**Available Settings:**
+
+[cols="2,2,3",options="header"]
+|===
+|Setting |Type |Description
+|**Preset Amounts** |Text (CSV) |Comma-separated sat amounts, e.g., `100,1000,10000`
+|**Show QR Mode** |Checkbox |Enable QR code / LNURL-pay tipping
+|**Show NWC Mode** |Checkbox |Enable Nostr Wallet Connect tipping
+|**Agent Lightning Field** |Text |Zendesk user field key, e.g., `user.custom_fields.lightning_address`
+|**Fallback Address** |Text |Default Lightning Address when agent doesn't have one
+|**Comment Visibility** |Dropdown |`public` (end-user sees) or `internal` (agents only)
+|**Branding Title** |Text |Custom title in app header
+|**Branding Description** |Text |Custom description text
+|===
+
+**Modifying Settings:**
+
+1. Admin Center → Apps and integrations → Apps → Zendesk Support apps
+2. Find "Zapdesk" in installed apps
+3. Click gear icon → "Settings"
+4. Update desired settings
+5. Click "Update" to save
+6. Changes take effect immediately (may require page refresh)
+
+**Best Practices:**
+
+- Start with QR mode only for initial rollout
+- Add NWC mode after user education
+- Use realistic preset amounts based on ticket value
+- Set internal visibility initially for testing
+- Configure fallback address for smoother onboarding
+
+==== Q: How do I monitor tipping activity?
+
+**A:** Monitoring options:
+
+**Zendesk Ticket Comments:**
+
+- All tips recorded as ticket comments
+- Search tickets for "Lightning tip" or "sats"
+- Export ticket data with comments
+- Use Zendesk Explore for reporting
+
+**Custom Reporting:**
+
+- Build Zendesk Explore dashboard
+- Filter comments containing tip confirmations
+- Aggregate by agent, date, amount
+- Track adoption metrics
+
+**Manual Tracking:**
+
+- Agents report tips received
+- Team tracks in spreadsheet
+- Compare wallet receipts to ticket comments
+
+**Future Enhancements:**
+
+- Centralized analytics dashboard
+- Real-time tip tracking
+- Agent leaderboards
+- Automated reporting emails
+
+==== Q: Can I customize the preset tip amounts?
+
+**A:** Yes, presets are fully configurable:
+
+**Configuration:**
+
+1. Admin Center → Zapdesk settings
+2. Find "Preset Amounts" setting
+3. Enter comma-separated values in sats
+4. Save changes
+
+**Examples:**
+
+- **Small tips**: `10,50,100`
+- **Standard**: `100,1000,10000`
+- **Premium support**: `1000,5000,10000,25000`
+- **Custom**: `500,2500,5000`
+
+**Best Practices:**
+
+- Offer 3-4 preset options (not too many)
+- Include range (small, medium, large)
+- Consider typical ticket value/complexity
+- Update based on Bitcoin price changes
+- Test with real users for feedback
+
+**Satoshi Values:**
+
+- 1,000 sats ≈ $0.20 - $0.50
+- 10,000 sats ≈ $2 - $5
+- 100,000 sats ≈ $20 - $50
+- Prices vary with Bitcoin exchange rate
+
+=== Technical Questions
+
+==== Q: What technologies does Zapdesk use?
+
+**A:** Technical stack:
+
+**Frontend:**
+
+- **React** (18.x): UI framework
+- **TypeScript** (5.x): Type-safe JavaScript
+- **Vite** (5.x): Build tool and dev server
+- **Zendesk App Framework (ZAF)** (v2): Zendesk integration SDK
+
+**Lightning Integration:**
+
+- **@getalby/sdk**: Nostr Wallet Connect implementation
+- **qrcode.react**: QR code generation
+- **LNURL-pay protocol**: Lightning Address resolution
+
+**Build & Deployment:**
+
+- **@zendesk/zcli**: Zendesk CLI for app packaging
+- **npm/pnpm**: Package management
+- **Git**: Version control
+
+**Testing:**
+
+- **Vitest**: Unit testing framework
+- **React Testing Library**: Component testing
+- **TypeScript**: Compile-time type checking
+
+==== Q: Is Zapdesk open source?
+
+**A:** License and source availability:
+
+**Current Status:**
+
+- Proprietary codebase by KnowAll AI
+- Not currently open source
+- Available for licensed deployment
+
+**Future Plans:**
+
+- Consider open sourcing under MIT license
+- Community contributions welcome
+- Transparent development roadmap
+
+**Access:**
+
+- Contact KnowAll AI for licensing
+- Custom deployments available
+- Source code access for licensed customers
+
+==== Q: Does Zapdesk work with Zendesk mobile app?
+
+**A:** Mobile compatibility:
+
+**Current Support:**
+
+- **Web Browser (Mobile)**: ✅ Fully supported
+  - Responsive design adapts to mobile
+  - Touch-optimized controls
+  - QR scanning via wallet apps works
+
+- **Zendesk Mobile App**: ⚠️ Limited
+  - Sidebar apps may not render
+  - Dependent on Zendesk mobile SDK
+  - Recommend mobile web browser instead
+
+**Best Mobile Experience:**
+
+1. Open Zendesk in mobile web browser (not app)
+2. View ticket normally
+3. Zapdesk sidebar appears and works fully
+4. QR scanning seamless with wallet apps
+5. NWC connection works in browser
+
+**Future Enhancements:**
+
+- Native mobile app integration (if Zendesk SDK improves)
+- Progressive Web App (PWA) version
+- Standalone mobile interface
+
+==== Q: Can I integrate Zapdesk with other ticketing systems?
+
+**A:** Platform compatibility:
+
+**Current Support:**
+
+- **Zendesk**: ✅ Fully supported (ZAF v2 framework)
+- **Other Platforms**: ❌ Not currently supported
+
+**Potential Future Integrations:**
+
+- **Intercom**: Similar iframe app model
+- **Freshdesk**: App marketplace support
+- **Help Scout**: Custom app framework
+- **Salesforce Service Cloud**: Lightning components
+
+**Custom Development:**
+
+- Core Lightning payment logic is platform-agnostic
+- Can be adapted to other ticketing platforms
+- Requires platform-specific SDK integration
+- Contact KnowAll AI for custom development
+
+**Self-Service Option:**
+
+- Extract core payment components
+- Build custom UI for your platform
+- Maintain Zendesk version separately
+
+==== Q: How do I report bugs or request features?
+
+**A:** Bug reporting and feature requests:
+
+**Bug Reporting:**
+
+1. **Verify Issue**: Confirm bug is reproducible
+2. **Check Documentation**: Review link:TROUBLESHOOTING.adoc[Troubleshooting Guide] first
+3. **Gather Information**:
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Screenshots or screen recordings
+   - Browser and Zendesk version
+   - Console errors (F12 developer tools)
+4. **Submit Report**:
+   - Email: support@knowallai.com
+   - GitHub Issues: (if open source)
+   - Include all diagnostic information
+
+**Feature Requests:**
+
+1. **Business Case**: Describe need and benefit
+2. **Use Case**: Explain specific scenario
+3. **Priority**: Business critical vs. nice-to-have
+4. **Mockups**: Include UI mockups if relevant
+
+**Contact Channels:**
+
+- **Email**: support@knowallai.com
+- **GitHub**: (when available)
+- **Community Forum**: (planned)
+
+**Response Times:**
+
+- **Critical Bugs**: 24-48 hours
+- **Standard Issues**: 3-5 business days
+- **Feature Requests**: Evaluated in planning cycles

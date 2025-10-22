@@ -1,18 +1,42 @@
-= Solution Design
-KnowAll AI
-:toc:
+= Technical Solution Design - Zapdesk
+KnowAll AI - Zendesk Lightning Network Tipping Application
+:doctype: book
+:toc: left
+:toclevels: 2
+:sectlinks:
+:sectanchors:
+:sectnums!:
+:chapter-signifier:
+:source-highlighter: coderay
 :icons: font
+:imagesdir: images
+:pdf-fontsdir: fonts
+:pdf-font: Calibri
+
+include::TERMS.adoc[]
+
+include::CONFIDENTIALITY.adoc[]
+
+== Document History
+
+[cols="1,2,1,3",options="header"]
+|===
+|Version |Date |Author |Changes
+|1.0 |2025-10-22 |KnowAll AI |Initial solution design document created for Zapdesk Lightning Network tipping application
+|1.1 |2025-10-22 |Akash Jadhav |Updated document structure to follow professional technical design standards with enhanced formatting and organization
+|===
+
+:sectnums:
 
 == Overview
-Zapdesk is a ZAF v2 sidebar app enabling end-users to tip agents over the Bitcoin Lightning Network. The MVP is client-only, wallet-agnostic, and supports:
+Zapdesk is a ZAF sidebar app enabling users to tip agents over the Bitcoin Lightning Network. The MVP is client-only, wallet-agnostic, and supports:
 
-* **QR / LNURL-pay**: display target + QR for manual payment.
-* **Nostr Wallet Connect (NWC)**: programmatic tipping from the user’s wallet.
-* **End-user message**: included with the tip and appended to the ticket.
-* **Ticket posting**: app posts a confirmation to the ticket (public/internal).
-* **NWC balance**: show wallet balance when available.
-
-No WebLN. No backend required.
+* **Lightning Network Integration**: Send tips using Lightning addresses configured in agent profiles
+* **QR Code Generation**: Display QR codes for easy mobile wallet scanning
+* **Custom Tip Amounts**: Support for predefined and custom tip amounts
+* **Configurable Comment Visibility**: Admin setting to control whether tip comments are public or private
+* **LNURL Support**: Full LNURL protocol implementation for Lightning payments
+* **Service Layer Architecture**: Clean separation of concerns with dedicated services for Zendesk and Lightning operations
 
 == Architecture
 
@@ -20,7 +44,7 @@ No WebLN. No backend required.
 |===
 | Component | Description
 
-| ZAF v2 React App
+| ZAF React App
 | Packaged (iframe) React + TypeScript + Vite build to `/assets`. Uses ZAF SDK (`ZAFClient`) to read context and post to the ticket.
 
 | Agent Mapping
@@ -28,9 +52,6 @@ No WebLN. No backend required.
 
 | Payment – QR / LNURL
 | Render QR + copyable string for the selected preset amount using LNURL-pay or BOLT11 as provided/configured.
-
-| Payment – NWC
-| Use `@getalby/sdk` to pair a user wallet via NWC. Execute tips with an optional memo (includes end-user message + ticket/agent context). Attempt to read and display wallet **balance** via SDK (if the wallet exposes it).
 
 | End-User Message
 | Short text input bound to the payment memo (NWC). Always appended to the ticket post after success.
@@ -41,22 +62,12 @@ No WebLN. No backend required.
 
 == Key Flows
 
-=== A) Tip via QR / LNURL-pay
+=== Tip via QR / LNURL-pay
 . App loads; determines target agent and payout address.
 . User enters an optional message; selects a preset.
 . App displays QR + copyable payment string.
 . User pays with their wallet.
 . User clicks “I’ve paid” (manual acknowledge) → app posts to ticket with the message.
-
-=== B) Tip via NWC
-. User clicks **Connect wallet (NWC)** and pairs.
-. App attempts `getBalance()` (if available) → shows balance.
-. User enters an optional message; selects a preset.
-. App resolves an invoice/target and calls NWC to execute payment with memo.
-. On success:
-.. App refreshes NWC **balance** (if supported).
-.. App posts to ticket (message + details).
-. On failure: show clear error; offer QR fallback.
 
 == UI
 
@@ -77,9 +88,7 @@ No WebLN. No backend required.
 
 == Settings
 
-* `presets`: CSV sats amounts (e.g., `100,1000,10000`)
-* `showQrMode`: boolean
-* `showNwcMode`: boolean
+* `presets`: hardcoded sats amounts (e.g., `100,1000,10000`)
 * `agentLightningFieldKey`: string (e.g., `user.custom_fields.lightning_address`)
 * `fallbackLightningAddress`: string (optional)
 * `postVisibility`: enum `public`|`internal`
@@ -89,8 +98,7 @@ No WebLN. No backend required.
 
 * All code runs inside the ZAF iframe sandbox.
 * No custody; payments occur in the end-user’s wallet.
-* NWC connect strings treated as secrets (not logged; session-scoped by default).
-* Respect CSP; avoid unnecessary external scripts.
+* Respect CSP (Content Security Policy); avoid unnecessary external scripts.
 
 == Build & Packaging
 
@@ -98,3 +106,15 @@ No WebLN. No backend required.
 * `manifest.json` points `support.ticket_sidebar` → `assets/iframe.html`
 * `zcli apps:package` to produce distributable zip
 
+include::TESTING.adoc[]
+
+include::DEPLOYMENTS.adoc[]
+
+[appendix]
+include::TROUBLESHOOTING.adoc[]
+
+[appendix]
+include::FAQS.adoc[]
+
+[appendix]
+include::CONTACTS.adoc[]

@@ -1,0 +1,11 @@
+== General Terms & Conditions
+
+This technical solution design document is provided by KnowAll AI for the Zapdesk Lightning Network Tipping Application project under the terms of the project agreement. The information contained herein is proprietary and confidential.
+
+**Scope of Document:** This document covers the technical implementation details, architecture, and system specifications for the Zapdesk ZAF v2 sidebar application as deployed in Zendesk environments.
+
+**Limitations:** This document reflects the system state as of the date of creation. Any subsequent modifications, enhancements, or integrations may require updates to this documentation.
+
+**Support and Maintenance:** For technical support, system modifications, or clarifications regarding this document, please contact the KnowAll AI development team through established support channels.
+
+**Intellectual Property:** All solution components, custom code, and technical implementations described in this document remain the intellectual property of KnowAll AI unless otherwise specified in the project agreement.

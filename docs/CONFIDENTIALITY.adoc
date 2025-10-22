@@ -1,0 +1,3 @@
+== Confidentiality Statement
+
+This document contains confidential and proprietary information belonging to KnowAll AI and its clients. The information disclosed herein is intended solely for the authorized personnel involved in the Zapdesk Lightning Network Tipping Application project.

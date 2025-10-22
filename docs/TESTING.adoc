@@ -1,0 +1,130 @@
+== Testing
+
+=== Unit Testing
+
+**React Component Testing:**
+
+* Component rendering validation using React Testing Library
+* Props handling and state management testing
+* Event handler and callback function testing
+* Custom hooks testing (useZafClient, useNWC)
+* Error boundary component testing
+
+**TypeScript Type Validation:**
+
+* Interface and type definition validation
+* Type safety verification across components
+* Generic type parameter testing
+* Enum and constant value testing
+
+**Service Layer Testing:**
+
+* Lightning Address validation logic
+* Payment string generation (LNURL-pay, BOLT11)
+* QR code generation accuracy
+* NWC SDK integration testing
+* Ticket posting service validation
+
+=== Integration Testing
+
+**ZAF Client Integration:**
+
+* ZAF Client initialization and connection
+* Context data retrieval (ticket, assignee, user)
+* Ticket comment posting validation
+* Settings and metadata retrieval
+* Error handling for ZAF operations
+
+**Lightning Network Integration:**
+
+* LNURL-pay invoice generation
+* QR code rendering and accuracy
+* NWC wallet connection and pairing
+* Payment execution via NWC
+* Balance retrieval from NWC wallets
+
+**External Services:**
+
+* Agent Lightning Address resolution
+* Payment string validation
+* QR code library integration
+* Error handling for network failures
+
+=== End-to-End Testing
+
+**Complete Tipping Workflows:**
+
+* QR/LNURL-pay tipping flow (manual acknowledgment)
+* NWC wallet connection and payment flow
+* End-user message inclusion in tips
+* Ticket posting with public/internal visibility
+* Balance display and refresh (NWC)
+
+**Error Scenarios:**
+
+* Invalid Lightning Address handling
+* Network connectivity failures
+* Payment execution failures
+* Ticket posting errors
+* Wallet disconnection scenarios
+
+**User Experience Testing:**
+
+* UI responsiveness and load times
+* Form validation and error messages
+* Accessibility compliance (WCAG 2.1)
+* Cross-browser compatibility (Chrome, Firefox, Edge, Safari)
+* Mobile device compatibility
+
+=== Performance Testing
+
+**Performance Criteria:**
+
+* Initial app load time < 2 seconds
+* QR code generation < 500ms
+* NWC payment execution < 5 seconds
+* Ticket posting < 3 seconds
+* UI interaction responsiveness < 200ms
+
+**Load Testing:**
+
+* Multiple concurrent user sessions
+* Large message text handling
+* Rapid preset selection changes
+* Stress testing payment operations
+
+=== Security Testing
+
+**Data Security:**
+
+* NWC connection string secure handling
+* No logging of sensitive payment data
+* CSP compliance validation
+* XSS vulnerability testing
+* Input sanitization verification
+
+**ZAF Sandbox Security:**
+
+* Iframe sandbox restrictions validation
+* No unauthorized API calls
+* Proper permission handling
+* Secure data transmission
+
+=== User Acceptance Testing
+
+**Test Scenarios:**
+
+* Agent receives tip via QR/LNURL-pay
+* Agent receives tip via NWC
+* End-user message appears in ticket
+* Public vs internal comment visibility
+* Balance display updates correctly
+* Error messages are clear and actionable
+
+**Acceptance Criteria:**
+
+* All payment methods work reliably
+* Ticket posts are accurate and complete
+* UI is intuitive and easy to use
+* Error handling provides clear guidance
+* Performance meets defined criteria
