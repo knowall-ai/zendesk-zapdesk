@@ -21,7 +21,6 @@ export default function App({ client }) {
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
-  const [amount, setAmount] = useState(null);
 
   useEffect(() => {
     if (!client) return;
