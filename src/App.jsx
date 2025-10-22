@@ -9,7 +9,7 @@ import {
 } from "./services/zendeskService";
 import { isValidLightningAddress } from "./services/lightningService";
 
-const TIP_AMOUNTS = [100, 1000, 10000]; // sats hardcoded
+const TIP_AMOUNTS = [100, 1000, 10000];
 
 export default function App({ client }) {
   const [loading, setLoading] = useState(true);

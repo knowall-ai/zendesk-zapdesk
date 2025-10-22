@@ -4,7 +4,10 @@
       "Bash(npm install)",
       "Bash(npm run build)",
       "Bash(npm install qrcode)",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(git rm:*)",
+      "Bash(gh api:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []
