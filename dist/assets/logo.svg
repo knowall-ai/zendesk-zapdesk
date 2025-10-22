@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Transparent background (no rect) -->
-  <title>Lightning Bolt</title>
-  <desc>Neon green lightning bolt with transparent background</desc>
-  <g fill="#B8FF00">
-    <polygon points="296,40 136,284 236,284 196,472 376,224 276,224"/>
-  </g>
-</svg>
