@@ -101,42 +101,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 
 **Tip:** You can also copy the payment string and paste it into your wallet manually.
 
-==== Q: How do I tip using Nostr Wallet Connect (NWC)?
-
-**A:** NWC enables direct programmatic payments from your wallet:
-
-**Prerequisites:**
-
-- NWC-compatible wallet (Alby, Mutiny, Coinos, etc.)
-- NWC connection string from your wallet
-
-**First-Time Setup:**
-
-1. Open your Lightning wallet settings
-2. Find "Nostr Wallet Connect" or "NWC" section
-3. Generate NWC connection string (looks like `nostr+walletconnect://...`)
-4. Copy connection string
-
-**Tipping with NWC:**
-
-1. Open ticket in Zendesk
-2. Click **"Connect Wallet (NWC)"** in Zapdesk sidebar
-3. Paste your NWC connection string
-4. Click **"Connect"**
-5. Wallet balance displays (if supported by wallet)
-6. Select tip amount from presets
-7. Add optional message
-8. Click **"Tip Now"** button
-9. Payment executes automatically
-10. Balance updates and confirmation posts to ticket
-
-**Benefits:**
-
-- No scanning QR codes
-- Faster payment experience
-- See wallet balance in app
-- One-click tipping after initial setup
-
 ==== Q: Is my payment information secure?
 
 **A:** Yes, Zapdesk follows security best practices:
@@ -232,12 +196,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 |**Voltage** |Cloud-hosted Lightning node |Users wanting self-custody without hardware
 |===
 
-**NWC Support:**
-
-- ✅ Full NWC: Alby, Mutiny, Coinos, LNbits
-- ⚠️ Limited: Some wallets may not support balance queries
-- ❌ No NWC: Wallet of Satoshi, Phoenix, Breez (use QR code instead)
-
 ==== Q: How do I get Bitcoin to tip with?
 
 **A:** Several ways to acquire Bitcoin for tipping:
@@ -272,46 +230,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 - 1 Bitcoin = 100,000,000 sats
 - Sats are convenient for small payments
 - Example: 1,000 sats ≈ $0.20-$0.50 (price varies)
-
-==== Q: How do I set up my Lightning wallet for NWC?
-
-**A:** NWC setup varies by wallet:
-
-**Alby (Recommended for NWC):**
-
-1. Install Alby browser extension or mobile app
-2. Create/import wallet
-3. Go to Settings → Wallet Connect
-4. Click "Create Connection"
-5. Set spending limits if desired
-6. Copy connection string (starts with `nostr+walletconnect://`)
-7. Paste into Zapdesk when prompted
-
-**Mutiny Wallet:**
-
-1. Open Mutiny wallet (https://app.mutinywallet.com)
-2. Navigate to Settings → Connections
-3. Create new NWC connection
-4. Configure permissions (payment execution, balance read)
-5. Copy connection string
-6. Use in Zapdesk
-
-**LNbits (Self-Hosted):**
-
-1. Access your LNbits instance
-2. Install Nostr Wallet Connect extension
-3. Create new NWC connection
-4. Set budget and expiry
-5. Copy connection string
-6. Use in Zapdesk
-
-**Connection String Security:**
-
-- Treat NWC connection strings like passwords
-- Set spending limits to minimize risk
-- Use separate connection for tipping vs. main wallet
-- Revoke connections when no longer needed
-- Don't share connection strings publicly
 
 === Agent Configuration
 
@@ -392,39 +310,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 - Migrate to individual addresses for production
 - Provides best experience for agents and users
 
-==== Q: What if an agent doesn't have a Lightning Address?
-
-**A:** Fallback handling:
-
-**Zapdesk Behavior:**
-
-1. Checks ticket assignee's user profile for Lightning Address
-2. If not found, uses fallback Lightning Address from settings
-3. If no fallback configured, displays error message
-
-**Error Message Example:**
-```
-"Lightning Address not configured for this agent.
-Please contact support to set up tipping."
-```
-
-**Solutions:**
-
-**Option 1: Configure Fallback Address (Quick)**
-- Admin sets fallback Lightning Address in Zapdesk settings
-- All tips for agents without addresses go to fallback
-- Good for initial deployment
-
-**Option 2: Agent Sets Personal Address (Best)**
-- Agent creates Lightning wallet
-- Agent adds Lightning Address to Zendesk profile
-- Receives tips directly
-
-**Option 3: Disable App for Specific Agents**
-- Zendesk admin can control app visibility
-- Hide Zapdesk for agents who don't want tips
-- Prevents confusion for users
-
 === Administration
 
 ==== Q: How do I install Zapdesk in my Zendesk instance?
@@ -477,11 +362,7 @@ Please contact support to set up tipping."
 [cols="2,2,3",options="header"]
 |===
 |Setting |Type |Description
-|**Preset Amounts** |Text (CSV) |Comma-separated sat amounts, e.g., `100,1000,10000`
-|**Show QR Mode** |Checkbox |Enable QR code / LNURL-pay tipping
-|**Show NWC Mode** |Checkbox |Enable Nostr Wallet Connect tipping
 |**Agent Lightning Field** |Text |Zendesk user field key, e.g., `user.custom_fields.lightning_address`
-|**Fallback Address** |Text |Default Lightning Address when agent doesn't have one
 |**Comment Visibility** |Dropdown |`public` (end-user sees) or `internal` (agents only)
 |**Branding Title** |Text |Custom title in app header
 |**Branding Description** |Text |Custom description text
@@ -499,7 +380,6 @@ Please contact support to set up tipping."
 **Best Practices:**
 
 - Start with QR mode only for initial rollout
-- Add NWC mode after user education
 - Use realistic preset amounts based on ticket value
 - Set internal visibility initially for testing
 - Configure fallback address for smoother onboarding
@@ -534,39 +414,6 @@ Please contact support to set up tipping."
 - Real-time tip tracking
 - Agent leaderboards
 - Automated reporting emails
-
-==== Q: Can I customize the preset tip amounts?
-
-**A:** Yes, presets are fully configurable:
-
-**Configuration:**
-
-1. Admin Center → Zapdesk settings
-2. Find "Preset Amounts" setting
-3. Enter comma-separated values in sats
-4. Save changes
-
-**Examples:**
-
-- **Small tips**: `10,50,100`
-- **Standard**: `100,1000,10000`
-- **Premium support**: `1000,5000,10000,25000`
-- **Custom**: `500,2500,5000`
-
-**Best Practices:**
-
-- Offer 3-4 preset options (not too many)
-- Include range (small, medium, large)
-- Consider typical ticket value/complexity
-- Update based on Bitcoin price changes
-- Test with real users for feedback
-
-**Satoshi Values:**
-
-- 1,000 sats ≈ $0.20 - $0.50
-- 10,000 sats ≈ $2 - $5
-- 100,000 sats ≈ $20 - $50
-- Prices vary with Bitcoin exchange rate
 
 === Technical Questions
 
@@ -711,9 +558,3 @@ Please contact support to set up tipping."
 - **Email**: support@knowallai.com
 - **GitHub**: (when available)
 - **Community Forum**: (planned)
-
-**Response Times:**
-
-- **Critical Bugs**: 24-48 hours
-- **Standard Issues**: 3-5 business days
-- **Feature Requests**: Evaluated in planning cycles
