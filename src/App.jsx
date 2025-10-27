@@ -15,8 +15,6 @@ export default function App({ client }) {
   const [assignee, setAssignee] = useState({ name: "", id: null, avatar: "" });
   const [lightningAddress, setLightningAddress] = useState("");
   const [selectedAmount, setSelectedAmount] = useState(null);
-  const [qrDataUrl, setQrDataUrl] = useState("");
-  const [lnurlString, setLnurlString] = useState("");
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
@@ -57,8 +55,6 @@ export default function App({ client }) {
   async function onSelectAmount(amount) {
     console.log("[amount]", amount);
     setSelectedAmount(amount);
-    setQrDataUrl("");
-    setLnurlString("");
 
     if (!isValidLightningAddress(lightningAddress)) {
       setError("No Lightning Address found for the agent.");
@@ -82,8 +78,6 @@ export default function App({ client }) {
 
       // Reset UI
       setSelectedAmount(null);
-      setQrDataUrl("");
-      setLnurlString("");
       setMessage("");
     } catch (err) {
       console.error("Failed to post comment", err);
