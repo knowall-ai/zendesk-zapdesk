@@ -3,8 +3,6 @@
     "name": "Zapdesk",
     "short_description": "Tip with Lightning.",
     "long_description": "Tip with Lightning.",
-    "installation_instructions": "Simply click install.",
-    "title": "Tip the agent instantly with Bitcoin Lightning",
-    "footer": "This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket."
+    "installation_instructions": "Simply click install."
   }
 }
