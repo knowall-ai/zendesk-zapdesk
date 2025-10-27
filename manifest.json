@@ -1,9 +1,9 @@
 {
   "name": "Zapdesk",
   "author": {
-    "name": "Akash Jadhav",
-    "email": "Akash.Jadhav@knowall.ai",
-    "url": "https://knowallai.zendesk.com"
+    "name": "KnowAll AI",
+    "email": "support@knowall.ai",
+    "url": "https://github.com/knowall-ai/zendesk-zapdesk"
   },
   "defaultLocale": "en",
   "private": true,
