@@ -43,3 +43,43 @@ jobs:
           name: build-artifacts
           path: dist/
           retention-days: 7
+
+      - name: Get version from package.json
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        id: get_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Create release package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          cd dist
+          zip -r ../zapdesk-${{ steps.get_version.outputs.VERSION }}.zip .
+          cd ..
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          files: zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
+          body: |
+            ## Zapdesk v${{ steps.get_version.outputs.VERSION }}
+
+            ### Installation
+            1. Download `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip`
+            2. Install using Zendesk CLI:
+               ```bash
+               zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
+               ```
+
+            ### Build Artifacts
+            - Compiled application bundle
+            - Zendesk app manifest
+            - Localization files
+
+            For deployment instructions, see [DEPLOYMENTS.adoc](docs/DEPLOYMENTS.adoc)
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -57,28 +57,35 @@ Upload the zip in Admin Center → Apps and integrations → Zendesk Support app
 
 This project uses GitHub Actions for CI/CD:
 
-**Continuous Integration (CI)**
+**Continuous Integration & Release (CI)**
 - Runs on every push to `main` and on all pull requests
-- Executes linting and builds the application
+- Builds the application automatically
 - Uploads build artifacts for verification
+- **On push to `main`**: Creates a GitHub release with `zapdesk-{version}.zip`
 
-**Release Workflow**
-- Automatically triggered when you push a version tag (e.g., `v1.0.0`)
-- Builds the application
-- Creates a release package (`zapdesk-{version}.zip`)
-- Publishes a GitHub release with the packaged zip file
-
-**Creating a Release:**
+**Creating a New Release:**
 
 ```bash
 # Update version in package.json
 npm version patch  # or minor, or major
 
-# Push the tag to trigger release
-git push origin --tags
+# Commit and push to main
+git add package.json
+git commit -m "Bump version to x.x.x"
+git push origin main
 ```
 
-The workflow will automatically build and create a GitHub release with installation instructions.
+The CI workflow will automatically:
+1. Build the application
+2. Create `zapdesk-{version}.zip` package
+3. Publish a GitHub release with the zip file
+
+**Alternative: Tag-based Release**
+You can also create releases by pushing version tags using the `release.yml` workflow:
+```bash
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
 
 ## Configure (App settings)
 
