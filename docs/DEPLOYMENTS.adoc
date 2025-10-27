@@ -1,5 +1,48 @@
 == Deployments
 
+=== CI/CD Pipeline
+
+This project uses **GitHub Actions** for automated building and releasing.
+
+**Workflow: Build and Release** (`.github/workflows/Build and Release.yml`)
+
+**Triggers:**
+* On every push to `main` branch
+* On every pull request to `main` branch
+
+**On Pull Requests:**
+* Installs dependencies
+* Builds the application
+* Verifies build artifacts (checks for `manifest.json`)
+* Uploads build artifacts for review (retained for 7 days)
+
+**On Push to Main:**
+* Performs all the above steps, PLUS:
+* Reads version from `package.json`
+* Creates `zapdesk-{version}.zip` package
+* Automatically publishes a GitHub release with the zip file attached
+* Release includes installation instructions and links to documentation
+
+**Creating an Automated Release:**
+
+```bash
+# 1. Update version in package.json
+npm version patch  # or minor, or major
+
+# 2. Commit and push to main
+git add package.json
+git commit -m "Bump version to x.x.x"
+git push origin main
+```
+
+The GitHub Actions workflow will automatically build, package, and create a release at:
+`https://github.com/knowall-ai/zendesk-zapdesk/releases`
+
+**Download Release:**
+* Navigate to the Releases page
+* Download `zapdesk-{version}.zip`
+* Install directly to Zendesk using the zip file
+
 === Build Process
 
 **Development Build:**
@@ -53,18 +96,40 @@ zcli apps:package
 
 **Zendesk Production Environment:**
 
+**Option 1: Using GitHub Release (Recommended)**
+
 1. Complete UAT testing in Sandbox
 2. Obtain deployment approval from stakeholders
-3. Schedule deployment window (low-traffic hours recommended)
-4. Create backup of current production app version
-5. Upload new version to production:
+3. Download the release zip from GitHub Releases page:
+   ```
+   https://github.com/knowall-ai/zendesk-zapdesk/releases
+   ```
+4. Schedule deployment window (low-traffic hours recommended)
+5. Create backup of current production app version
+6. Upload new version to production:
+   ```bash
+   zcli apps:update --path zapdesk-{version}.zip
+   ```
+7. Verify deployment success
+8. Perform smoke testing in production
+9. Monitor for errors in first 24 hours
+10. Notify end-users of new version
+
+**Option 2: Manual Build and Deploy**
+
+1. Complete UAT testing in Sandbox
+2. Obtain deployment approval from stakeholders
+3. Build locally: `npm run build`
+4. Schedule deployment window (low-traffic hours recommended)
+5. Create backup of current production app version
+6. Upload new version to production:
    ```bash
    zcli apps:update --path dist/
    ```
-6. Verify deployment success
-7. Perform smoke testing in production
-8. Monitor for errors in first 24 hours
-9. Notify end-users of new version
+7. Verify deployment success
+8. Perform smoke testing in production
+9. Monitor for errors in first 24 hours
+10. Notify end-users of new version
 
 === Configuration Management
 
@@ -108,21 +173,6 @@ zcli apps:package
 }
 ```
 
-**Deployment Checklist:**
-
-- [ ] Code review completed and approved
-- [ ] All unit tests passing
-- [ ] Integration tests successful
-- [ ] Build artifacts generated successfully
-- [ ] App packaged with correct version number
-- [ ] Settings configured for target environment
-- [ ] Lightning Address field configured in Zendesk
-- [ ] Zendesk custom field created (if required)
-- [ ] Backup of current version created
-- [ ] Rollback plan documented
-- [ ] Deployment window communicated to users
-- [ ] Post-deployment testing plan ready
-
 === Version Management
 
 **Versioning Strategy:**
@@ -131,6 +181,27 @@ zcli apps:package
 * **Minor version (0.X.0)**: New features, non-breaking changes
 * **Patch version (0.0.X)**: Bug fixes, minor updates
 
+**Automated Version Bumping:**
+
+```bash
+# Patch release (1.0.0 → 1.0.1) - Bug fixes
+npm version patch
+
+# Minor release (1.0.0 → 1.1.0) - New features
+npm version minor
+
+# Major release (1.0.0 → 2.0.0) - Breaking changes
+npm version major
+
+# Commit and push (triggers automated release)
+git push origin main
+```
+
+The `npm version` command automatically:
+* Updates the version in `package.json`
+* Creates a git commit with the version change
+* Creates a git tag (e.g., `v1.0.1`)
+
 **Changelog Maintenance:**
 
 * Document all changes in `CHANGELOG.md`
@@ -138,15 +209,14 @@ zcli apps:package
 * Reference GitHub issues/pull requests
 * Provide upgrade instructions
 
-**Git Tagging:**
+**Release Process:**
 
-```bash
-# Tag release version
-git tag -a v1.0.0 -m "Release version 1.0.0"
-
-# Push tags to remote
-git push origin --tags
-```
+1. Update version using `npm version [patch|minor|major]`
+2. Push to main branch: `git push origin main`
+3. Push the tag: `git push origin --tags`
+4. GitHub Actions automatically creates the release
+5. Download the release zip from GitHub Releases page
+6. Deploy to Zendesk using the downloaded zip file
 
 === Monitoring and Maintenance
 
