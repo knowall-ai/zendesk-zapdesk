@@ -1,0 +1,9 @@
+{
+  "app": {
+    "name": "Zapdesk",
+    "short_description": "Propina con Lightning.",
+    "long_description": "Propina con Lightning.",
+    "installation_instructions": "Simplemente haga clic en instalar.",
+    "title": "Envía propina al agente instantáneamente con Bitcoin Lightning"
+  }
+}

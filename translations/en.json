@@ -3,6 +3,7 @@
     "name": "Zapdesk",
     "short_description": "Tip with Lightning.",
     "long_description": "Tip with Lightning.",
-    "installation_instructions": "Simply click install."
+    "installation_instructions": "Simply click install.",
+    "title": "Tip the agent instantly with Bitcoin Lightning"
   }
 }
