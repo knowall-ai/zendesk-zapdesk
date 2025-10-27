@@ -88,11 +88,15 @@ Zapdesk is a ZAF sidebar app enabling users to tip agents over the Bitcoin Light
 
 == Settings
 
-* `presets`: hardcoded sats amounts (e.g., `100,1000,10000`)
-* `agentLightningFieldKey`: string (e.g., `user.custom_fields.lightning_address`)
-* `fallbackLightningAddress`: string (optional)
-* `postVisibility`: enum `public`|`internal`
-* `brandingTitle` / `brandingDescription` (optional)
+**Configurable Parameters (manifest.json):**
+
+* `private_comments`: boolean - When true, tip confirmations are posted as internal notes; when false, posted as public comments
+
+**Hardcoded Configuration:**
+
+* Tip presets: `100, 1000, 10000` sats (defined in `src/App.jsx`)
+* Agent Lightning Address field: `user.custom_fields.lightning_address` (hardcoded in `src/services/zendeskService.js`)
+* Payment mode: QR/LNURL-pay only (always enabled)
 
 == Security
 

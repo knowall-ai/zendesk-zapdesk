@@ -38,6 +38,8 @@ export async function initializeTicketData(client) {
     };
 
     // Step 3: Get Lightning Address from custom field
+    // Check both 'lightning_address' (canonical underscore format) and 'lightningaddress' (no underscore)
+    // to handle inconsistent field naming in different Zendesk configurations
     const lightningAddress =
       user.user_fields?.lightning_address ||
       user.user_fields?.lightningaddress ||

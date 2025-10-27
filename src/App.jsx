@@ -7,6 +7,7 @@ import {
   setupAutoResize,
 } from "./services/zendeskService";
 import { isValidLightningAddress } from "./services/lightningService";
+import i18n from "./lib/i18n";
 
 const TIP_AMOUNTS = [100, 1000, 10000];
 
@@ -89,7 +90,7 @@ export default function App({ client }) {
   return (
     <div className="zd-container">
       <header className="zd-header">
-        <h2 className="zd-title">Tip the agent instantly with Bitcoin Lightning</h2>
+        <h2 className="zd-title">{i18n.t('app.title')}</h2>
         <div className="zd-agent">
           {assignee.avatar ? (
             <img src={assignee.avatar} alt="agent" className="zd-avatar" />
@@ -156,7 +157,7 @@ export default function App({ client }) {
       </div>
 
       <footer className="zd-footer">
-        This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket.
+        {i18n.t('app.footer')}
       </footer>
     </div>
   );
