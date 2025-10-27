@@ -1,0 +1,45 @@
+name: Generate PDF Documentation
+
+on:
+  workflow_run:
+    workflows: ["Build and Release"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  generate-pdf:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install asciidoctor-pdf
+        run: gem install asciidoctor-pdf
+
+      - name: Get version from package.json
+        id: get_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Generate SOLUTION_DESIGN.pdf
+        run: |
+          asciidoctor-pdf docs/SOLUTION_DESIGN.adoc -o SOLUTION_DESIGN.pdf
+          echo "PDF generated successfully"
+          ls -la SOLUTION_DESIGN.pdf
+
+      - name: Upload PDF to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          files: SOLUTION_DESIGN.pdf
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

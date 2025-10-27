@@ -73,6 +73,9 @@ jobs:
                zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
                ```
 
+            ### Documentation
+            - `SOLUTION_DESIGN.pdf` - Complete solution design and technical documentation (generated automatically)
+
             ### Build Artifacts
             - Compiled application bundle
             - Zendesk app manifest
