@@ -10,7 +10,8 @@
       "Bash(git config:*)",
       "Read(//c/SkytechClouds/Skytech Cloud/Akash Skytech - Documents/Eir Evo/PharmaFlowBenReview/BelfastTrustPharmaFlow/docs/**)",
       "Bash(gem list:*)",
-      "Bash(asciidoctor-pdf:*)"
+      "Bash(asciidoctor-pdf:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
