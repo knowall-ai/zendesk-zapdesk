@@ -75,17 +75,10 @@ git commit -m "Bump version to x.x.x"
 git push origin main
 ```
 
-The CI workflow will automatically:
+The workflow will automatically:
 1. Build the application
 2. Create `zapdesk-{version}.zip` package
 3. Publish a GitHub release with the zip file
-
-**Alternative: Tag-based Release**
-You can also create releases by pushing version tags using the `release.yml` workflow:
-```bash
-git tag -a v1.0.0 -m "Release version 1.0.0"
-git push origin v1.0.0
-```
 
 ## Configure (App settings)
 
