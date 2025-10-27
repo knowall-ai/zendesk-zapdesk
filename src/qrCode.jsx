@@ -36,7 +36,7 @@ const LightningInvoiceQR = ({ address, amountSats, size = 220 }) => {
     fetchInvoice();
   }, [address, amountSats]);
 
-  if (error) return <p style={{ color: "red" }}>⚠️ {error}</p>;
+  if (error) return <div className="zd-error">⚠️ {error}</div>;
   if (!invoice) return <p>Loading invoice...</p>;
 
   return (

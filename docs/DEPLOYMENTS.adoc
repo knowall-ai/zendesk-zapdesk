@@ -139,34 +139,18 @@ zcli apps:package
 {
   "parameters": [
     {
-      "name": "presets",
-      "type": "text",
-      "default": "100,1000,10000",
-      "required": false
-    },
-    {
-      "name": "showQrMode",
+      "name": "private_comments",
       "type": "checkbox",
-      "default": true
-    },
-    {
-      "name": "agentLightningFieldKey",
-      "type": "text",
-      "default": "user.custom_fields.lightning_address"
-    },
-    {
-      "name": "fallbackLightningAddress",
-      "type": "text",
-      "required": false
-    },
-    {
-      "name": "postVisibility",
-      "type": "dropdown",
-      "default": "public"
+      "required": false,
+      "default": false
     }
   ]
 }
 ```
+
+**Parameter Description:**
+
+* `private_comments`: When enabled, tip confirmation comments are posted as internal notes (visible to agents only). When disabled, comments are public (visible to requester and agents).
 
 === Version Management
 

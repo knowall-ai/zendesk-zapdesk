@@ -12,7 +12,7 @@ module.exports = {
     filename: "assets/app.js",
     path: path.resolve(__dirname, "dist"),
     publicPath: "",
-    clean: false,
+    clean: true,
   },
   resolve: {
     extensions: [".js", ".jsx"],
