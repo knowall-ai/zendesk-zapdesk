@@ -12,7 +12,8 @@
       "Bash(gem list:*)",
       "Bash(asciidoctor-pdf:*)",
       "Bash(git restore:*)",
-      "Read(//c/Users/Akash Jadhav/Pictures/Screenshots/**)"
+      "Read(//c/Users/Akash Jadhav/Pictures/Screenshots/**)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []

@@ -156,7 +156,7 @@ export default function App({ client }) {
       </div>
 
       <footer className="zd-footer">
-        This widget uses the Bitcoin Lightning to send tips directly to your support agent — Please click on the 'Mark as Paid' button manually.
+        This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket.
       </footer>
     </div>
   );
