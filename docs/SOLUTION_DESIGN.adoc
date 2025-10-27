@@ -54,7 +54,7 @@ Zapdesk is a ZAF sidebar app enabling users to tip agents over the Bitcoin Light
 | Render QR + copyable string for the selected preset amount using LNURL-pay or BOLT11 as provided/configured.
 
 | End-User Message
-| Short text input bound to the payment memo (NWC). Always appended to the ticket post after success.
+| Short text input appended to the ticket post after marking as paid.
 
 | Ticket Posting
 | After success, app posts a message to the ticket via ZAF (visibility = `public` or `internal`, from settings). Contains amount, agent target, and the user message.
@@ -75,8 +75,8 @@ Zapdesk is a ZAF sidebar app enabling users to tip agents over the Bitcoin Light
 * Agent context (avatar/name) + payout destination (masked).
 * Message textarea (limit, e.g., 140 chars).
 * Preset buttons (100 / 1,000 / 10,000 sats; configurable).
-* Actions: **Tip by QR**, **Connect wallet (NWC)** / **Tip now**.
-* Status banners; copy helpers; balance indicator (NWC).
+* Actions: **Tip by QR**, **Mark as Paid**.
+* Status banners; QR code display.
 
 == ZAF Integration
 

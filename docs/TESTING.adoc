@@ -7,7 +7,7 @@
 * Component rendering validation using React Testing Library
 * Props handling and state management testing
 * Event handler and callback function testing
-* Custom hooks testing (useZafClient, useNWC)
+* Custom hooks testing (useZafClient)
 * Error boundary component testing
 
 **TypeScript Type Validation:**
@@ -22,7 +22,6 @@
 * Lightning Address validation logic
 * Payment string generation (LNURL-pay, BOLT11)
 * QR code generation accuracy
-* NWC SDK integration testing
 * Ticket posting service validation
 
 === Integration Testing
@@ -39,9 +38,7 @@
 
 * LNURL-pay invoice generation
 * QR code rendering and accuracy
-* NWC wallet connection and pairing
-* Payment execution via NWC
-* Balance retrieval from NWC wallets
+* Payment flow with manual confirmation
 
 **External Services:**
 
@@ -55,10 +52,9 @@
 **Complete Tipping Workflows:**
 
 * QR/LNURL-pay tipping flow (manual acknowledgment)
-* NWC wallet connection and payment flow
 * End-user message inclusion in tips
 * Ticket posting with public/internal visibility
-* Balance display and refresh (NWC)
+* Mark as Paid button functionality
 
 **Error Scenarios:**
 
@@ -82,7 +78,6 @@
 
 * Initial app load time < 2 seconds
 * QR code generation < 500ms
-* NWC payment execution < 5 seconds
 * Ticket posting < 3 seconds
 * UI interaction responsiveness < 200ms
 
@@ -97,7 +92,6 @@
 
 **Data Security:**
 
-* NWC connection string secure handling
 * No logging of sensitive payment data
 * CSP compliance validation
 * XSS vulnerability testing
@@ -115,10 +109,9 @@
 **Test Scenarios:**
 
 * Agent receives tip via QR/LNURL-pay
-* Agent receives tip via NWC
+* Agent receives tip via Lightning Address
 * End-user message appears in ticket
 * Public vs internal comment visibility
-* Balance display updates correctly
 * Error messages are clear and actionable
 
 **Acceptance Criteria:**

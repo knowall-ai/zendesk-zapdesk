@@ -3,50 +3,29 @@ KnowAll AI
 :toc:
 :icons: font
 
-== Feature: End-User Tipping Widget (QR + NWC)
+== Feature: End-User Tipping Widget
 
 *User Story 1 — View tip options*
-As an end-user on a ticket, I can see presets and choose QR or NWC, and I can add a short message.
+As an end-user on a ticket, I can see tip presets and QR code payment options, and I can add a short message.
 
 *Acceptance Criteria*
 - *Given* I am viewing a ticket with Zapdesk enabled
 - *When* the panel loads
 - *Then* I see a message input (limited length, e.g., 140 chars)
 - *And* I see preset buttons (e.g., 100/1,000/10,000 sats)
-- *And* I see **Tip by QR** and **Connect wallet (NWC)** (when enabled)
+- *And* I see **Tip by QR** button
 
 == Feature: Tip by QR / LNURL-pay
 
 *User Story 2 — Pay via QR*
-As an end-user, I can scan a QR or copy a payment string to send a tip.
+As an end-user, I can scan a QR code or copy a payment string to send a tip.
 
 *Acceptance Criteria*
 - *Given* QR mode is enabled and the agent has a Lightning Address
 - *When* I choose a preset and click **Tip by QR**
-- *Then* I see a QR and a copyable BOLT11 or LNURL-pay string
+- *Then* I see a QR code and a copyable BOLT11 or LNURL-pay string
 - *And* I see basic instructions for completing the payment
-- *And* I can click **I’ve paid** to acknowledge completion
-
-== Feature: Tip via NWC
-
-*User Story 3 — Connect wallet (NWC)*
-As an end-user, I can connect my wallet via NWC and tip programmatically, with my message included.
-
-*Acceptance Criteria*
-- *Given* NWC mode is enabled
-- *When* I click **Connect wallet (NWC)** and complete pairing
-- *Then* the app indicates I am connected
-- *And* *if supported by the wallet*, I see my **balance**
-
-*User Story 4 — Execute NWC tip*
-As an end-user, I can select a preset and send a tip via NWC, including my message.
-
-*Acceptance Criteria*
-- *Given* I’m connected via NWC
-- *When* I enter a message and choose a preset
-- *Then* the app executes the payment via NWC with the message in the memo
-- *And* on success the app shows confirmation
-- *And* on failure the app shows an error and offers QR fallback
+- *And* I can click **Mark as Paid** to record completion and post to ticket
 
 == Feature: Agent Payout Mapping
 
@@ -66,7 +45,7 @@ As an admin, I want the app to post that the agent was tipped, including the end
 
 *Acceptance Criteria*
 - *Given* the app setting `postVisibility` is `public` or `internal`
-- *When* a tip completes (QR acknowledged or NWC success)
+- *When* a tip completes (user clicks "Mark as Paid")
 - *Then* the app posts a message to the ticket using the configured visibility
 - *And* the post includes: amount, agent target, and the end-user message
 
@@ -79,7 +58,6 @@ As an admin, I can configure presets and enable/disable modes.
 - *Given* I set presets to `100,1000,10000`
 - *When* the app renders
 - *Then* I see those amounts as buttons
-- *And* if NWC is disabled, no NWC UI is shown
 - *And* if QR is disabled, no QR UI is shown
 
 *User Story 8 — Branding*
@@ -97,8 +75,8 @@ As a platform owner, I need the app to be safe and non-custodial.
 *Acceptance Criteria*
 - *Given* the app is installed
 - *Then* all code runs in the ZAF iframe
-- *And* payments occur only in the user’s wallet
-- *And* no server-side storage of NWC connect strings
+- *And* payments occur only in the user's wallet
+- *And* no server-side storage of sensitive payment data
 
 *User Story 10 — Build & package*
 As a developer, I can build and package the app for upload.

@@ -20,7 +20,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 1. **QR/LNURL-pay**: Display QR code for manual wallet payments
 2. **Custom Messages**: Users can include personalized thank-you messages
 3. **Ticket Integration**: Tips are recorded in ticket comments (public or internal)
-4. **Balance Display**: View wallet balance when using NWC (if supported by wallet)
 
 **How It Works:**
 
@@ -29,8 +28,9 @@ This document provides answers to frequently asked questions about the Zapdesk L
 3. Agent's Lightning Address is automatically resolved
 4. User selects tip amount from presets (e.g., 100, 1,000, 10,000 sats)
 5. User can add optional message
-6. Payment via QR code scan or NWC direct payment
-7. Confirmation posted to ticket as comment
+6. Payment via QR code scan
+7. User clicks "Mark as Paid" to record the tip
+8. Confirmation posted to ticket as comment
 
 ==== Q: What is the Lightning Network?
 
@@ -68,7 +68,7 @@ This document provides answers to frequently asked questions about the Zapdesk L
 1. User enters Lightning Address in their Zendesk profile
 2. Zapdesk resolves the address to payment endpoint (LNURL-pay)
 3. Generates payment invoice for selected amount
-4. Creates QR code for scanning or direct NWC payment
+4. Creates QR code for scanning
 
 **Setting Up Lightning Address:**
 
@@ -108,11 +108,10 @@ This document provides answers to frequently asked questions about the Zapdesk L
 **Security Measures:**
 
 1. **No Custody**: Zapdesk never holds your Bitcoin or has access to your wallet
-2. **NWC Secrets**: Connection strings are stored in session storage only (not logged or transmitted to servers)
-3. **ZAF Sandbox**: App runs in Zendesk's isolated iframe sandbox
-4. **No Backend**: Client-only app with no server to be compromised
-5. **CSP Compliance**: Strict Content Security Policy prevents injection attacks
-6. **HTTPS Only**: All communications encrypted via HTTPS
+2. **ZAF Sandbox**: App runs in Zendesk's isolated iframe sandbox
+3. **No Backend**: Client-only app with no server to be compromised
+4. **CSP Compliance**: Strict Content Security Policy prevents injection attacks
+5. **HTTPS Only**: All communications encrypted via HTTPS
 
 **What Zapdesk CAN Access:**
 
@@ -123,9 +122,8 @@ This document provides answers to frequently asked questions about the Zapdesk L
 **What Zapdesk CANNOT Access:**
 
 - Your wallet private keys or seed phrase
-- Your full wallet balance (unless explicitly exposed via NWC getBalance)
+- Your wallet balance
 - Payment details beyond what you explicitly authorize
-- Your NWC connection string after session ends
 
 ==== Q: What happens to my tip after I send it?
 
@@ -134,13 +132,12 @@ This document provides answers to frequently asked questions about the Zapdesk L
 **Immediate Actions:**
 
 1. **Payment Execution**: Sats transferred from your wallet to agent's Lightning Address
-2. **Confirmation**: Payment success/failure confirmation displayed in app
+2. **Confirmation**: User clicks "Mark as Paid" after completing payment
 3. **Ticket Comment**: App posts confirmation to ticket with:
    - Tip amount (e.g., "1,000 sats")
    - Your personal message (if provided)
    - Agent information
    - Timestamp
-4. **Balance Update**: If using NWC, wallet balance refreshes
 
 **Comment Visibility:**
 
@@ -171,7 +168,7 @@ This document provides answers to frequently asked questions about the Zapdesk L
 |===
 |Wallet |Description |Best For
 |**Wallet of Satoshi** |Simplest Lightning wallet, iOS/Android |First-time users, casual tippers
-|**Alby** |Browser extension + mobile, great NWC support |Browser-based tipping, web users
+|**Alby** |Browser extension + mobile, easy QR scanning |Browser-based tipping, web users
 |**Strike** |Fiat on-ramp, easy Bitcoin purchase |Users wanting to buy Bitcoin easily
 |**Cash App** |Popular payment app with Bitcoin support |US users already on Cash App
 |===
@@ -338,7 +335,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 3. **Configure Settings:**
    - Preset amounts (CSV): `100,1000,10000`
    - Enable QR mode: Yes
-   - Enable NWC mode: Yes
    - Lightning field key: `user.custom_fields.lightning_address`
    - Fallback address: `team@company.com` (optional)
    - Comment visibility: Public or Internal
@@ -430,7 +426,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 
 **Lightning Integration:**
 
-- **@getalby/sdk**: Nostr Wallet Connect implementation
 - **qrcode.react**: QR code generation
 - **LNURL-pay protocol**: Lightning Address resolution
 
@@ -490,7 +485,6 @@ This document provides answers to frequently asked questions about the Zapdesk L
 2. View ticket normally
 3. Zapdesk sidebar appears and works fully
 4. QR scanning seamless with wallet apps
-5. NWC connection works in browser
 
 **Future Enhancements:**
 

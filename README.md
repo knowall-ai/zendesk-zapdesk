@@ -1,8 +1,8 @@
-# Zapdesk — Zendesk Lightning Tips (QR + NWC)
+# Zapdesk — Zendesk Lightning Tips
 
 A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin Lightning.
 
-- **Wallet-agnostic**: **QR (BOLT11/LNURL-pay)** and **Nostr Wallet Connect (NWC)**.
+- **Wallet-agnostic**: **QR (BOLT11/LNURL-pay)** payment methods.
 - **End-user message**: user can add a short “thank you” with their tip.
 - **Ticket posting**: app auto-posts that the agent was tipped (public or internal, configurable).
 
@@ -16,9 +16,9 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 ## Features
 
 - 🧾 **QR / Invoice** — Generate and display **BOLT11** or **LNURL-pay** target + QR.
-- 💬 **User message** — free-text input included in the NWC memo and appended to the ticket.
+- 💬 **User message** — free-text input appended to the ticket comment.
 - 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
-- ⚙️ **Admin settings** — tip presets, enable/disable NWC/QR, agent address field key, post visibility.
+- ⚙️ **Admin settings** — tip presets, agent address field key, post visibility.
 
 ---
 

@@ -150,11 +150,6 @@ zcli apps:package
       "default": true
     },
     {
-      "name": "showNwcMode",
-      "type": "checkbox",
-      "default": true
-    },
-    {
       "name": "agentLightningFieldKey",
       "type": "text",
       "default": "user.custom_fields.lightning_address"
@@ -224,7 +219,6 @@ The `npm version` command automatically:
 
 * Monitor ZAF client errors via browser console
 * Track payment success/failure rates
-* Monitor NWC connection reliability
 * Track ticket posting errors
 * Monitor app load times and performance
 
