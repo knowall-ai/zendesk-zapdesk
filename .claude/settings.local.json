@@ -11,7 +11,8 @@
       "Read(//c/SkytechClouds/Skytech Cloud/Akash Skytech - Documents/Eir Evo/PharmaFlowBenReview/BelfastTrustPharmaFlow/docs/**)",
       "Bash(gem list:*)",
       "Bash(asciidoctor-pdf:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Read(//c/Users/Akash Jadhav/Pictures/Screenshots/**)"
     ],
     "deny": [],
     "ask": []

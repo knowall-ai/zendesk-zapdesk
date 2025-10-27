@@ -53,6 +53,33 @@ zcli apps:package      # produces distributable .zip
 
 Upload the zip in Admin Center → Apps and integrations → Zendesk Support apps → Upload app.
 
+## Automated Releases
+
+This project uses GitHub Actions for CI/CD:
+
+**Continuous Integration (CI)**
+- Runs on every push to `main` and on all pull requests
+- Executes linting and builds the application
+- Uploads build artifacts for verification
+
+**Release Workflow**
+- Automatically triggered when you push a version tag (e.g., `v1.0.0`)
+- Builds the application
+- Creates a release package (`zapdesk-{version}.zip`)
+- Publishes a GitHub release with the packaged zip file
+
+**Creating a Release:**
+
+```bash
+# Update version in package.json
+npm version patch  # or minor, or major
+
+# Push the tag to trigger release
+git push origin --tags
+```
+
+The workflow will automatically build and create a GitHub release with installation instructions.
+
 ## Configure (App settings)
 
 - Tip presets: e.g. 100,1000,10000
