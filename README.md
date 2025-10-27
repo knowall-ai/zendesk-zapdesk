@@ -1,11 +1,10 @@
-# Zapdesk — Zendesk Lightning Tips (QR + NWC)
+# Zapdesk — Zendesk Lightning Tips
 
 A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin Lightning.
 
-- **Wallet-agnostic**: **QR (BOLT11/LNURL-pay)** and **Nostr Wallet Connect (NWC)**.
+- **Wallet-agnostic**: **QR (BOLT11/LNURL-pay)** payment methods.
 - **End-user message**: user can add a short “thank you” with their tip.
 - **Ticket posting**: app auto-posts that the agent was tipped (public or internal, configurable).
-- **NWC balance**: if connected via NWC and supported, show wallet balance.
 
 ![847b3c6c-7894-4c53-a2b3-486cc8b88b83](https://github.com/user-attachments/assets/9bc94d6b-ebea-44bf-a098-03c274e91c1f)
 
@@ -16,11 +15,10 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 
 ## Features
 
-- 🔗 **NWC (optional)** — “Connect wallet” then tip; show **balance** if exposed by the wallet.
 - 🧾 **QR / Invoice** — Generate and display **BOLT11** or **LNURL-pay** target + QR.
-- 💬 **User message** — free-text input included in the NWC memo and appended to the ticket.
+- 💬 **User message** — free-text input appended to the ticket comment.
 - 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
-- ⚙️ **Admin settings** — tip presets, enable/disable NWC/QR, agent address field key, post visibility.
+- ⚙️ **Admin settings** — tip presets, agent address field key, post visibility.
 
 ---
 
@@ -30,7 +28,6 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 - **Payout target**: agent Lightning Address from a Zendesk user field (configurable).
 - **Payment flows**
   - **QR/LNURL-pay**: show QR + copyable string.
-  - **NWC**: end-user authorizes; app executes tip; attempts to read **balance**.
 
 ---
 
@@ -56,12 +53,38 @@ zcli apps:package      # produces distributable .zip
 
 Upload the zip in Admin Center → Apps and integrations → Zendesk Support apps → Upload app.
 
+## Automated Releases
+
+This project uses GitHub Actions for CI/CD:
+
+**Continuous Integration & Release (CI)**
+- Runs on every push to `main` and on all pull requests
+- Builds the application automatically
+- Uploads build artifacts for verification
+- **On push to `main`**: Creates a GitHub release with `zapdesk-{version}.zip`
+
+**Creating a New Release:**
+
+```bash
+# Update version in package.json
+npm version patch  # or minor, or major
+
+# Commit and push to main
+git add package.json
+git commit -m "Bump version to x.x.x"
+git push origin main
+```
+
+The workflow will automatically:
+1. Build the application
+2. Create `zapdesk-{version}.zip` package
+3. Publish a GitHub release with the zip file
+
 ## Configure (App settings)
 
 - Tip presets: e.g. 100,1000,10000
 - Enable modes:
   - `showQrMode` (QR/LNURL)
-  - `showNwcMode` (Nostr Wallet Connect)
 - Agent address field key: e.g. `user.custom_fields.lightning_address`
 - Fallback address (optional)
 - Ticket post visibility: `public` or `internal`
@@ -70,17 +93,27 @@ Upload the zip in Admin Center → Apps and integrations → Zendesk Support app
 ## Usage (end-user flow)
 
 - Open ticket → Zapdesk shows presets and a message box (optional).
-- Choose QR (scan/copy) or Connect wallet (NWC) and tip.
+- Choose QR (scan/copy) to tip.
   - On success:
   - The app posts to the ticket (public/internal as configured).
-- If NWC is connected, the balance refreshes.
 - Agent receives funds to their Lightning Address.
 
 ## Security
 
 - Iframe sandbox (ZAF v2). No custody; end-user’s wallet makes the payment.
-- NWC connect strings are handled in browser; do not persist server-side.
 - No WebLN.
+
+## Prerequisite: Custom Field
+
+- Add custom field
+  - go to - https://{subdomain}.zendesk.com/admin/people/configuration/user_fields
+  - Click on Add field
+  - Enter type - text, name - lightning address, Field key - lightning_address
+- go to - https://{subdomain}.zendesk.com/admin/people/team/members
+  - In member table click on manage in support
+  - On manage in support page Scroll to bottom you will see previously added lightning_address, enter the lightning email here.
+- Now go to ticket you can see Zapdesk App on the right sidebar, click on it, It will show the app.
+
 
 ## License
 

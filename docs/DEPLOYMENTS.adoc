@@ -1,0 +1,243 @@
+== Deployments
+
+=== CI/CD Pipeline
+
+This project uses **GitHub Actions** for automated building and releasing.
+
+**Workflow: Build and Release** (`.github/workflows/Build and Release.yml`)
+
+**Triggers:**
+* On every push to `main` branch
+* On every pull request to `main` branch
+
+**On Pull Requests:**
+* Installs dependencies
+* Builds the application
+* Verifies build artifacts (checks for `manifest.json`)
+* Uploads build artifacts for review (retained for 7 days)
+
+**On Push to Main:**
+* Performs all the above steps, PLUS:
+* Reads version from `package.json`
+* Creates `zapdesk-{version}.zip` package
+* Automatically publishes a GitHub release with the zip file attached
+* Release includes installation instructions and links to documentation
+
+**Creating an Automated Release:**
+
+```bash
+# 1. Update version in package.json
+npm version patch  # or minor, or major
+
+# 2. Commit and push to main
+git add package.json
+git commit -m "Bump version to x.x.x"
+git push origin main
+```
+
+The GitHub Actions workflow will automatically build, package, and create a release at:
+`https://github.com/knowall-ai/zendesk-zapdesk/releases`
+
+**Download Release:**
+* Navigate to the Releases page
+* Download `zapdesk-{version}.zip`
+* Install directly to Zendesk using the zip file
+
+=== Build Process
+
+**Development Build:**
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server with hot reload
+npm run dev
+
+# Build for production
+npm run build
+```
+
+**Production Build:**
+
+```bash
+# Clean previous builds
+npm run clean
+
+# Build optimized production assets
+npm run build
+
+# Package Zendesk app
+zcli apps:package
+```
+
+**Build Output:**
+
+* `/dist/assets/iframe.html` - Main application entry point
+* `/dist/assets/app.js` - Bundled JavaScript (React + TypeScript)
+* `/dist/assets/app.css` - Compiled CSS styles
+* `/dist/manifest.json` - Zendesk app manifest
+* `/dist/translations/` - Localization files
+* `zapdesk-{version}.zip` - Packaged app for upload
+
+=== Environment Deployment
+
+**Zendesk Sandbox Environment:**
+
+1. Build the application with `npm run build`
+2. Package the app with `zcli apps:package`
+3. Upload to Zendesk Sandbox:
+   ```bash
+   zcli apps:create dist/
+   ```
+4. Test in Zendesk sandbox ticket sidebar
+5. Verify ZAF client integration
+6. Test all payment workflows
+
+**Zendesk Production Environment:**
+
+**Option 1: Using GitHub Release (Recommended)**
+
+1. Complete UAT testing in Sandbox
+2. Obtain deployment approval from stakeholders
+3. Download the release zip from GitHub Releases page:
+   ```
+   https://github.com/knowall-ai/zendesk-zapdesk/releases
+   ```
+4. Schedule deployment window (low-traffic hours recommended)
+5. Create backup of current production app version
+6. Upload new version to production:
+   ```bash
+   zcli apps:update --path zapdesk-{version}.zip
+   ```
+7. Verify deployment success
+8. Perform smoke testing in production
+9. Monitor for errors in first 24 hours
+10. Notify end-users of new version
+
+**Option 2: Manual Build and Deploy**
+
+1. Complete UAT testing in Sandbox
+2. Obtain deployment approval from stakeholders
+3. Build locally: `npm run build`
+4. Schedule deployment window (low-traffic hours recommended)
+5. Create backup of current production app version
+6. Upload new version to production:
+   ```bash
+   zcli apps:update --path dist/
+   ```
+7. Verify deployment success
+8. Perform smoke testing in production
+9. Monitor for errors in first 24 hours
+10. Notify end-users of new version
+
+=== Configuration Management
+
+**App Settings (manifest.json):**
+
+```json
+{
+  "parameters": [
+    {
+      "name": "private_comments",
+      "type": "checkbox",
+      "required": false,
+      "default": false
+    }
+  ]
+}
+```
+
+**Parameter Description:**
+
+* `private_comments`: When enabled, tip confirmation comments are posted as internal notes (visible to agents only). When disabled, comments are public (visible to requester and agents).
+
+=== Version Management
+
+**Versioning Strategy:**
+
+* **Major version (X.0.0)**: Breaking changes, major feature releases
+* **Minor version (0.X.0)**: New features, non-breaking changes
+* **Patch version (0.0.X)**: Bug fixes, minor updates
+
+**Automated Version Bumping:**
+
+```bash
+# Patch release (1.0.0 → 1.0.1) - Bug fixes
+npm version patch
+
+# Minor release (1.0.0 → 1.1.0) - New features
+npm version minor
+
+# Major release (1.0.0 → 2.0.0) - Breaking changes
+npm version major
+
+# Commit and push (triggers automated release)
+git push origin main
+```
+
+The `npm version` command automatically:
+* Updates the version in `package.json`
+* Creates a git commit with the version change
+* Creates a git tag (e.g., `v1.0.1`)
+
+**Changelog Maintenance:**
+
+* Document all changes in `CHANGELOG.md`
+* Include migration notes for breaking changes
+* Reference GitHub issues/pull requests
+* Provide upgrade instructions
+
+**Release Process:**
+
+1. Update version using `npm version [patch|minor|major]`
+2. Push to main branch: `git push origin main`
+3. Push the tag: `git push origin --tags`
+4. GitHub Actions automatically creates the release
+5. Download the release zip from GitHub Releases page
+6. Deploy to Zendesk using the downloaded zip file
+
+=== Monitoring and Maintenance
+
+**Application Health Monitoring:**
+
+* Monitor ZAF client errors via browser console
+* Track payment success/failure rates
+* Track ticket posting errors
+* Monitor app load times and performance
+
+**User Feedback Collection:**
+
+* Monitor Zendesk app reviews and ratings
+* Collect user feedback via support channels
+* Track feature requests and enhancement ideas
+* Analyze usage patterns and adoption metrics
+
+**Maintenance Schedule:**
+
+* **Weekly**: Review error logs and user feedback
+* **Monthly**: Dependency updates and security patches
+* **Quarterly**: Feature releases and major updates
+* **As needed**: Critical bug fixes and security updates
+
+=== Rollback Procedures
+
+**Emergency Rollback:**
+
+1. Identify critical issue requiring rollback
+2. Notify stakeholders of rollback decision
+3. Restore previous version from backup:
+   ```bash
+   zcli apps:update --path backup/zapdesk-{previous-version}.zip
+   ```
+4. Verify rollback successful
+5. Communicate rollback to users
+6. Investigate root cause of issue
+7. Plan hotfix or corrected deployment
+
+**Rollback Validation:**
+
+* Test core functionality after rollback
+* Verify settings are preserved
+* Check user data integrity
+* Monitor for additional errors

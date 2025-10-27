@@ -1,0 +1,11 @@
+== Contact Information
+
+**KnowAll AI Support:**
+
+* GitHub Issues: https://github.com/knowall-ai/zendesk-zapdesk/issues
+
+**Community Resources:**
+
+* Documentation: Download the PDF named SOLUTION_DESIGN.pdf from https://github.com/knowall-ai/zendesk-zapdesk/releases location.
+* Lightning Network Resources: https://lightning.network
+* Zendesk Developer Portal: https://developer.zendesk.com

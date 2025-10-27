@@ -1,0 +1,31 @@
+== Troubleshooting Guide
+
+Common issues identified during development, testing, and deployment. Most of these have been resolved, but may recur in similar scenarios.
+
+[cols="1,2",options="header"]
+|===
+| Problem | Solution
+| *App fails to load in Zendesk sidebar* | Verify app is properly installed and enabled. Check ZAF client initialization in browser console. Ensure manifest.json location settings are correct. Try refreshing the ticket page.
+| *Agent Lightning Address not displaying* | Check that the custom field key in settings matches Zendesk user field. Verify agent has Lightning Address populated in their user profile. Check fallback address configuration.
+| *QR code not generating* | Verify Lightning Address is valid (format: user@domain.com). Check QR code library is loaded correctly. Inspect browser console for errors. Ensure payment string is properly formatted.
+| *Ticket comment not posting after payment* | Check ZAF client permissions for ticket.comment operations. Verify comment text is properly formatted. Ensure postVisibility setting is correctly configured. Check network errors in browser console.
+| *End-user message not included in ticket post* | Verify message textarea value is captured correctly. Check that message is properly appended to ticket comment. Ensure character limit validation doesn't truncate message.
+| *Preset amounts not displaying* | Check presets setting in app configuration (CSV format: 100,1000,10000). Verify preset parsing logic handles values correctly. Ensure UI components are rendering preset buttons.
+| *Error: "Invalid Lightning Address format"* | Lightning Address must follow format: user@domain.com. Check for extra spaces or special characters. Verify domain has proper Lightning Address DNS records. Test address with external validator.
+| *App styling appears broken* | Verify app.css is loaded correctly. Check for CSP violations blocking stylesheets. Clear browser cache and reload. Ensure Zendesk Garden CSS doesn't conflict.
+| *ZAF Client context data returns undefined* | Check that context data is available in current ticket view. Verify ZAF client is fully initialized before accessing data. Add proper error handling for undefined context.
+| *Multiple rapid clicks cause duplicate actions* | Implement button disable state during async operations. Add debouncing to click handlers. Show loading indicators during processing. Prevent multiple simultaneous requests.
+| *App performance slow in Zendesk* | Optimize React re-renders using useMemo and useCallback. Implement lazy loading for heavy components. Minimize bundle size by code splitting. Check for memory leaks in useEffect hooks.
+| *Settings not persisting between sessions* | Verify settings are accessed via ZAF client metadata API. Check that settings are saved in Zendesk app configuration. Ensure app parameters in manifest.json are correct.
+| *Cross-origin errors in browser console* | Verify all external API calls comply with CSP. Check CORS headers for external services. Ensure ZAF client is used for all Zendesk API calls. Review manifest.json domainWhitelist.
+| *Browser console shows TypeScript errors* | Verify TypeScript compilation is successful. Check tsconfig.json configuration. Ensure all dependencies have proper type definitions. Run `tsc --noEmit` to check for type errors.
+| *Vite build fails with dependency errors* | Clear node_modules and reinstall: `rm -rf node_modules package-lock.json && npm install`. Check for version conflicts in package.json. Verify Node.js version compatibility. Update dependencies if needed.
+| *Lightning Address resolution takes too long* | Implement timeout for address resolution (e.g., 5 seconds). Show loading indicator during resolution. Cache resolved addresses for better performance. Handle timeout errors gracefully.
+| *Tip amount validation not working* | Verify input validation logic for numeric values. Check for edge cases (negative, zero, decimal values). Implement proper error messages for invalid amounts. Test with various input formats.
+| *Mobile device layout issues* | Ensure responsive CSS is applied correctly. Test on various screen sizes and orientations. Use Zendesk Garden responsive utilities. Implement mobile-first design approach.
+| *Accessibility issues (keyboard navigation)* | Ensure all interactive elements are keyboard accessible. Implement proper ARIA labels and roles. Test with screen readers. Follow WCAG 2.1 accessibility guidelines.
+| *App crashes when switching between tickets* | Implement proper cleanup in useEffect hooks. Reset state when component unmounts. Handle ZAF context changes gracefully. Add error boundaries to prevent full app crashes.
+| *Environment variables not loaded in production* | Check Vite environment variable naming (VITE_ prefix). Verify .env files are properly configured. Ensure environment variables are set in build process. Don't commit .env files to version control.
+| *ZCLI package command fails* | Verify zcli is installed: `npm install -g @zendesk/zcli`. Check manifest.json syntax is valid. Ensure all required assets are in dist/ folder. Run `zcli apps:validate` to check for issues.
+| *PDF documentation not rendering diagrams* | Install required dependencies: asciidoctor-pdf, asciidoctor-diagram. Check Mermaid diagram syntax is valid. Verify asciidoctor-diagram extension is loaded. For Ubuntu 23.10+, disable AppArmor restrictions: `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`.
+|===

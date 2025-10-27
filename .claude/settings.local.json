@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run build)",
+      "Bash(npm install qrcode)",
+      "Bash(npm run dev)",
+      "Bash(git rm:*)",
+      "Bash(gh api:*)",
+      "Bash(git config:*)",
+      "Read(//c/SkytechClouds/Skytech Cloud/Akash Skytech - Documents/Eir Evo/PharmaFlowBenReview/BelfastTrustPharmaFlow/docs/**)",
+      "Bash(gem list:*)",
+      "Bash(asciidoctor-pdf:*)",
+      "Bash(git restore:*)",
+      "Read(//c/Users/Akash Jadhav/Pictures/Screenshots/**)",
+      "Bash(git log:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

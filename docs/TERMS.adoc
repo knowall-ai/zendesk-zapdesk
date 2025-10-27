@@ -1,0 +1,13 @@
+== General Terms & Conditions
+
+This documentation is provided for the Zapdesk Lightning Network Tipping Application, an open-source project developed by KnowAll AI.
+
+**License:** This project is released under the MIT License. See the LICENSE file in the repository root for full license terms. You are free to use, modify, and distribute this software in accordance with the MIT License.
+
+**Scope of Document:** This document covers the technical implementation details, architecture, and system specifications for the Zapdesk ZAF v2 sidebar application as deployed in Zendesk environments.
+
+**Limitations:** This document reflects the system state as of the date of creation. Any subsequent modifications, enhancements, or integrations may require updates to this documentation.
+
+**Support and Maintenance:** For technical support, system modifications, or clarifications regarding this document, please contact the KnowAll AI development team through established support channels or open an issue on the GitHub repository.
+
+**Open Source Contribution:** This is an open-source project. Contributions are welcome via pull requests. By contributing to this project, you agree that your contributions will be licensed under the same MIT License.

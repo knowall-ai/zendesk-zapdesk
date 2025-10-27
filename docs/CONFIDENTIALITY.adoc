@@ -1,0 +1,10 @@
+== Public Repository Statement
+
+This is an open-source project available in a public repository. All code, documentation, and materials are publicly accessible.
+
+While the project is open-source, users should note:
+
+* Secure your API keys and credentials appropriately
+* Follow Zendesk's terms of service and Lightning Network requirements
+* Test thoroughly before production deployment
+* You are responsible for managing your own Lightning Network node and wallet security
