@@ -82,7 +82,10 @@ export async function postTipComment(
 
     // Get the comment visibility setting from app settings
     const settings = await client.metadata();
-    const privateComments = settings.settings.private_comments || false;
+    // Ensure privateComments is properly converted to boolean
+    // Zendesk checkbox parameters can return strings "true"/"false" instead of booleans
+    const privateComments = settings.settings.private_comments === true ||
+                           settings.settings.private_comments === "true";
     const isPublic = !privateComments; // If checkbox is checked, comments are private
 
     // Update the ticket by appending a comment with configured visibility
