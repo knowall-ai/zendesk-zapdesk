@@ -53,5 +53,15 @@ module.exports = {
   ],
   optimization: {
     minimize: true,
+    minimizer: [
+      new (require('terser-webpack-plugin'))({
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
+    ],
   },
 };
