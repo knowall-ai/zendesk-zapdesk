@@ -106,15 +106,15 @@ The workflow will automatically:
 
 - Add custom field
   - Go to [https://{subdomain}.zendesk.com/admin/people/configuration/user_fields](https://{subdomain}.zendesk.com/admin/people/configuration/user_fields)
-  - Click on Add field
+  - Click on **Add field**
   - Enter the following:
-    - Type: `text`
-    - Name: `lightning address`
-    - Field key: `lightning_address` (exactly)
+    - **Type**: `text`
+    - **Name**: `lightning address`
+    - **Field key**: `lightning_address` (exactly)
 - Go to [https://{subdomain}.zendesk.com/admin/people/team/members](https://{subdomain}.zendesk.com/admin/people/team/members)
   - In member table click on manage in support
-  - On manage in support page Scroll to bottom you will see previously added `lightning_address` field, enter the lightning address (looks like an email) here.
-- Now go to ticket you can see Zapdesk App on the right sidebar, click on it, It will show the app.
+  - On manage in support page, scroll to bottom you will see previously added `lightning_address` field, enter the lightning address (looks like an email) for the user.
+- Now go to ticket you can see Zapdesk App on the right sidebar, click on it, and it will show the app.
 
 
 ## License
