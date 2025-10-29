@@ -18,6 +18,9 @@ export default function App({ client }) {
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
+  const [isPublic, setIsPublic] = useState(false);
+  const [isLightAgent, setIsLightAgent] = useState(false);
+  const [currentUserRole, setCurrentUserRole] = useState(null);
 
   useEffect(() => {
     if (!client) return;
@@ -41,6 +44,28 @@ export default function App({ client }) {
         setTicketId(data.ticketId);
         setAssignee(data.assignee);
         setLightningAddress(data.lightningAddress);
+
+        // Get current user role to determine if they're a light agent
+        try {
+          const roleData = await client.get('currentUser.role');
+          const role = roleData['currentUser.role'];
+          setCurrentUserRole(role);
+
+          // Check if user is a light agent
+          // Note: Zendesk API doesn't clearly document light agents,
+          // but we'll check for 'light_agent' or similar role names
+          const isLight = role && (
+            role.toLowerCase().includes('light') ||
+            role.toLowerCase() === 'light_agent'
+          );
+          setIsLightAgent(isLight);
+          console.log('[Zapdesk] Current user role:', role, 'Is light agent:', isLight);
+        } catch (roleErr) {
+          console.warn('[Zapdesk] Could not determine user role:', roleErr);
+          // If we can't determine the role, assume not a light agent
+          setIsLightAgent(false);
+        }
+
         setLoading(false);
       } catch (err) {
         console.error("[Zapdesk] Error initializing:", err);
@@ -73,12 +98,14 @@ export default function App({ client }) {
         selectedAmount,
         assignee.name,
         message,
-        lightningAddress
+        lightningAddress,
+        isPublic
       );
 
       // Reset UI
       setSelectedAmount(null);
       setMessage("");
+      setIsPublic(false);
     } catch (err) {
       console.error("Failed to post comment", err);
       setError(err.message || "Failed to post the comment to the ticket.");
@@ -145,6 +172,28 @@ export default function App({ client }) {
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
             />
+          </div>
+        )}
+
+        {selectedAmount && (
+          <div className="zd-checkbox-container">
+            <label className="zd-checkbox-label">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+                disabled={isLightAgent}
+                className="zd-checkbox"
+              />
+              <span className={isLightAgent ? "zd-checkbox-text-disabled" : ""}>
+                Make tip comment public (visible to end users)
+              </span>
+            </label>
+            {isLightAgent && (
+              <div className="zd-checkbox-hint">
+                Light agents cannot post public comments
+              </div>
+            )}
           </div>
         )}
 
