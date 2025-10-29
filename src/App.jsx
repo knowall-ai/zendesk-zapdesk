@@ -7,6 +7,7 @@ import {
   setupAutoResize,
 } from "./services/zendeskService";
 import { isValidLightningAddress } from "./services/lightningService";
+import i18n from "./lib/i18n";
 
 const TIP_AMOUNTS = [100, 1000, 10000];
 
@@ -44,7 +45,7 @@ export default function App({ client }) {
         setLoading(false);
       } catch (err) {
         console.error("[Zapdesk] Error initializing:", err);
-        setError(err.message || "Failed to load assignee info.");
+        setError(err.message || i18n.t("errors.failedToLoad"));
         setLoading(false);
       }
     }
@@ -57,14 +58,14 @@ export default function App({ client }) {
     setSelectedAmount(amount);
 
     if (!isValidLightningAddress(lightningAddress)) {
-      setError("No Lightning Address found for the agent.");
+      setError(i18n.t("errors.noLightningAddress"));
       return;
     }
   }
 
   async function markAsPaid() {
-    if (!ticketId) return setError("Ticket ID not found");
-    if (!selectedAmount) return setError("No tip amount selected");
+    if (!ticketId) return setError(i18n.t("errors.noTicketId"));
+    if (!selectedAmount) return setError(i18n.t("errors.noTipAmount"));
 
     try {
       await postTipComment(
@@ -81,15 +82,15 @@ export default function App({ client }) {
       setMessage("");
     } catch (err) {
       console.error("Failed to post comment", err);
-      setError(err.message || "Failed to post the comment to the ticket.");
+      setError(err.message || i18n.t("errors.failedToPost"));
     }
   }
 
-  if (loading) return <div className="zd-loading">Loading…</div>;
+  if (loading) return <div className="zd-loading">{i18n.t("ui.loading")}</div>;
   return (
     <div className="zd-container">
       <header className="zd-header">
-        <h2 className="zd-title">Tip the agent instantly with Bitcoin Lightning</h2>
+        <h2 className="zd-title">{i18n.t("ui.title")}</h2>
         <div className="zd-agent">
           {assignee.avatar ? (
             <img src={assignee.avatar} alt="agent" className="zd-avatar" />
@@ -97,8 +98,8 @@ export default function App({ client }) {
             <div className="zd-avatar zd-avatar--placeholder" />
           )}
           <div>
-            <div className="zd-agent-name">{assignee.name || "Unassigned"}</div>
-            <div className="zd-sub">Tip the agent with sats</div>
+            <div className="zd-agent-name">{assignee.name || i18n.t("ui.unassigned")}</div>
+            <div className="zd-sub">{i18n.t("ui.agentSubtitle")}</div>
           </div>
         </div>
       </header>
@@ -115,7 +116,7 @@ export default function App({ client }) {
               }`}
               onClick={() => onSelectAmount(a)}
             >
-              {a.toLocaleString()} sats
+              {a.toLocaleString()} {i18n.t("ui.satsLabel")}
             </button>
           ))}
         </div>
@@ -135,12 +136,12 @@ export default function App({ client }) {
         {selectedAmount && (
           <div className="zd-message-input">
             <label htmlFor="tip-message" className="zd-label">
-              Add a message (optional)
+              {i18n.t("ui.messageLabel")}
             </label>
             <textarea
               id="tip-message"
               className="zd-textarea"
-              placeholder="Thank you for your help!"
+              placeholder={i18n.t("ui.messagePlaceholder")}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
@@ -150,13 +151,13 @@ export default function App({ client }) {
 
         <div className="zd-actions">
           <button className="zd-btn zd-btn--primary" onClick={markAsPaid}>
-            Mark as Paid
+            {i18n.t("ui.markAsPaidButton")}
           </button>
         </div>
       </div>
 
       <footer className="zd-footer">
-        This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket.
+        {i18n.t("ui.footer")}
       </footer>
     </div>
   );
