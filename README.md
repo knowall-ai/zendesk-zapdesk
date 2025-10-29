@@ -94,8 +94,7 @@ The workflow will automatically:
 
 - Open ticket → Zapdesk shows presets and a message box (optional).
 - Choose QR (scan/copy) to tip.
-  - On success:
-  - The app posts to the ticket (public/internal as configured).
+  - On success: The app posts to the ticket (public/internal as configured).
 - Agent receives funds to their Lightning Address.
 
 ## Security
