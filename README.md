@@ -82,7 +82,7 @@ The workflow will automatically:
 
 ## Configure (App settings)
 
-- Tip presets: e.g. 100,1000,10000
+- Tip presets: e.g. `100,1000,10000`
 - Enable modes:
   - `showQrMode` (QR/LNURL)
 - Agent address field key: e.g. `user.custom_fields.lightning_address`
@@ -106,12 +106,15 @@ The workflow will automatically:
 ## Prerequisite: Custom Field
 
 - Add custom field
-  - go to - https://{subdomain}.zendesk.com/admin/people/configuration/user_fields
+  - Go to [https://{subdomain}.zendesk.com/admin/people/configuration/user_fields](https://{subdomain}.zendesk.com/admin/people/configuration/user_fields)
   - Click on Add field
-  - Enter type - text, name - lightning address, Field key - lightning_address
-- go to - https://{subdomain}.zendesk.com/admin/people/team/members
+  - Enter the following:
+    - Type - `text`
+    - Name - `lightning address`
+    - Field key - `lightning_address`
+- Go to [https://{subdomain}.zendesk.com/admin/people/team/members](https://{subdomain}.zendesk.com/admin/people/team/members)
   - In member table click on manage in support
-  - On manage in support page Scroll to bottom you will see previously added lightning_address, enter the lightning email here.
+  - On manage in support page Scroll to bottom you will see previously added `lightning_address` field, enter the lightning address (looks like an email) here.
 - Now go to ticket you can see Zapdesk App on the right sidebar, click on it, It will show the app.
 
 
