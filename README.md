@@ -109,9 +109,9 @@ The workflow will automatically:
   - Go to [https://{subdomain}.zendesk.com/admin/people/configuration/user_fields](https://{subdomain}.zendesk.com/admin/people/configuration/user_fields)
   - Click on Add field
   - Enter the following:
-    - Type - `text`
-    - Name - `lightning address`
-    - Field key - `lightning_address`
+    - Type: `text`
+    - Name: `lightning address`
+    - Field key: `lightning_address` (exactly)
 - Go to [https://{subdomain}.zendesk.com/admin/people/team/members](https://{subdomain}.zendesk.com/admin/people/team/members)
   - In member table click on manage in support
   - On manage in support page Scroll to bottom you will see previously added `lightning_address` field, enter the lightning address (looks like an email) here.
