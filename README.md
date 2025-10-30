@@ -19,6 +19,7 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 - 💬 **User message** — free-text input appended to the ticket comment.
 - 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
 - ⚙️ **Admin settings** — tip presets, agent address field key, post visibility.
+- 🌍 **Multi-language support** — Automatically detects and uses the Zendesk user's language preference (English, Spanish).
 
 ---
 
@@ -99,8 +100,52 @@ The workflow will automatically:
 
 ## Security
 
-- Iframe sandbox (ZAF v2). No custody; end-user’s wallet makes the payment.
+- Iframe sandbox (ZAF v2). No custody; end-user's wallet makes the payment.
 - No WebLN.
+
+## Multi-Language Support
+
+Zapdesk automatically detects and displays content in the user's preferred language based on their Zendesk profile settings.
+
+### Supported Languages
+
+- 🇬🇧 **English** (`en`) - Default language
+- 🇪🇸 **Spanish** (`es`) - Full translation available
+
+### How It Works
+
+1. **Automatic Detection**: When the app loads, it fetches the current user's locale from Zendesk via `currentUser.locale`
+2. **Smart Fallback**: If a user's specific locale variant isn't available (e.g., `es-MX`), the app falls back to the base language (`es`)
+3. **Default Language**: If the detected language isn't supported, the app defaults to English
+
+### Changing Your Language
+
+To see the app in a different language:
+
+1. **In Zendesk**, click on your profile picture (top right)
+2. Click **"View profile"** or **"My profile"**
+3. Click **"Edit profile"**
+4. Find the **"Language"** dropdown
+5. Select your preferred language (e.g., **"Español"** for Spanish)
+6. Click **"Save"** or **"Update"**
+7. Reload any ticket page - the Zapdesk app will now display in your selected language
+
+**Important**: The app uses your **Zendesk user profile language**, not your browser language settings.
+
+### Technical Details
+
+- Translation files: `translations/en.json` and `translations/es.json`
+- The app uses a custom i18n system that supports nested translation keys
+- Console logs show which locale is detected: `[Zapdesk] User locale: es`
+
+### Adding More Languages
+
+To add support for additional languages:
+
+1. Create a new translation file in `translations/` (e.g., `fr.json` for French)
+2. Copy the structure from `en.json` and translate all values
+3. Add the locale code to `manifest.json` under `supportedLocales`
+4. The app will automatically detect and use the new language
 
 ## Prerequisite: Custom Field
 
