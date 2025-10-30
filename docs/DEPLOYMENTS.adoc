@@ -41,7 +41,7 @@ The GitHub Actions workflow will automatically build, package, and create a rele
 **Download Release:**
 * Navigate to the Releases page
 * Download `zapdesk-{version}.zip`
-* Install directly to Zendesk using the zip file
+* Install directly to Zendesk using the zip file (see detailed installation instructions below)
 
 === Build Process
 
@@ -79,6 +79,212 @@ zcli apps:package
 * `/dist/manifest.json` - Zendesk app manifest
 * `/dist/translations/` - Localization files
 * `zapdesk-{version}.zip` - Packaged app for upload
+
+=== Administrator Installation Instructions
+
+This section provides step-by-step instructions for Zendesk administrators to install Zapdesk from the release zip file.
+
+==== Prerequisites
+
+Before installing Zapdesk, ensure you have:
+
+* **Admin access** to your Zendesk instance
+* A **Lightning Address custom field** configured (see instructions below)
+
+==== Step 1: Download the Latest Release
+
+1. Navigate to the GitHub Releases page: https://github.com/knowall-ai/zendesk-zapdesk/releases
+2. Locate the latest release version
+3. Download the `zapdesk-{version}.zip` file (e.g., `zapdesk-1.0.0.zip`)
+4. Save the zip file to your local computer
+
+==== Step 2: Create the Custom Field (First-Time Setup Only)
+
+Before installing the app, you must create a custom user field for Lightning addresses:
+
+1. Log into your Zendesk instance as an administrator
+2. Navigate to **Admin Center** (click the gear icon in the sidebar)
+3. Go to **People** → **Configuration** → **User fields**
+   * Direct URL: `https://{your-subdomain}.zendesk.com/admin/people/configuration/user_fields`
+4. Click **Add field** (top right corner)
+5. Configure the new field with the following settings:
+   * **Type**: Select `Text`
+   * **Display name** (also called "Field name" in UI): Enter `lightning address`
+   * **Field key**: Enter `lightning_address` (must be exactly this - case sensitive, no spaces)
+   * **Description**: (Optional) "Agent's Bitcoin Lightning address for receiving tips"
+   * **Required**: Leave unchecked
+   * **Visible to end users**: Uncheck (internal field only)
+6. Click **Save** to create the field
+
+IMPORTANT: The **Display name** is what agents see in the UI (can be "lightning address" with a space). The **Field key** is the technical identifier used by the app and must be exactly `lightning_address` (all lowercase, one word, no spaces). The app will not function correctly with a different field key.
+
+==== Step 3: Install the Zapdesk App to Zendesk
+
+1. In the **Admin Center**, navigate to **Apps and integrations** → **Apps** → **Zendesk Support apps**
+   * Direct URL: `https://{your-subdomain}.zendesk.com/admin/apps-integrations/apps/support-apps`
+2. Click **Upload private app** (top right corner)
+3. In the upload dialog:
+   * Click **Choose File**
+   * Select the `zapdesk-{version}.zip` file you downloaded in Step 1
+   * Click **Upload**
+4. Review the app details:
+   * App name: Zapdesk
+   * Version: {version}
+   * Permissions: Read ticket data, modify tickets, read user data
+5. Review the app permissions carefully
+6. Click **Install** to confirm the installation
+
+==== Step 4: Configure App Settings
+
+After installation, you need to configure the app settings:
+
+1. On the app installation confirmation page, or by navigating to the app settings:
+   * Admin Center → Apps → Zendesk Support apps → Zapdesk → Settings
+2. Configure the following parameters:
+
+**Required Settings:**
+
+* **Agent address field key**: Enter `user.custom_fields.lightning_address`
+  - This must match the custom field created in Step 2
+  - Default: `user.custom_fields.lightning_address`
+
+**Optional Settings:**
+
+* **Private comments**: Checkbox to control comment visibility for tip confirmations
+  - Checked: Comments appear as internal notes (agents only)
+  - Unchecked: Comments appear as public (visible to requester)
+  - Recommended: Unchecked to acknowledge tips publicly
+
+3. Click **Install** or **Update** to save the configuration
+
+==== Step 5: Add Lightning Addresses to Agent Profiles
+
+For each agent who should receive tips, add their Lightning address to their profile:
+
+1. Navigate to **Admin Center** → **People** → **Team** → **Team members**
+   * Direct URL: `https://{your-subdomain}.zendesk.com/admin/people/team/members`
+2. Locate the agent in the member table
+3. Click **Manage in Support** next to their name
+4. On the agent profile page, scroll to the bottom
+5. Find the **Lightning address** field (created in Step 2)
+6. Enter the agent's Lightning address
+   * Format: `user@provider.com` (similar to email)
+   * Example: `agent@getalby.com`
+7. Click **Save** to update the profile
+
+Repeat this process for all agents who should receive tips.
+
+TIP: You can use providers like Alby (getalby.com), Wallet of Satoshi, or other Lightning address services to generate Lightning addresses for your agents.
+
+==== Step 6: Verify Installation
+
+After completing the installation and configuration:
+
+1. Open any Zendesk support ticket in the agent interface
+2. Look for **Zapdesk** in the right sidebar under the Apps section
+3. Click on the Zapdesk app icon to open the app
+4. Verify the following:
+   * The app loads without errors
+   * Tip preset buttons are displayed with correct amounts
+   * The agent's Lightning address is detected (if configured in their profile)
+   * QR codes generate correctly when a payment method is selected
+   * The user message input field is functional
+
+If all checks pass, the installation is successful.
+
+==== Troubleshooting Common Issues
+
+**Issue: App doesn't appear in ticket sidebar**
+
+* Solution 1: Verify the app is installed and enabled
+  - Go to Admin Center → Apps → Zendesk Support apps
+  - Ensure Zapdesk shows as "Enabled"
+* Solution 2: Clear browser cache and hard refresh (Ctrl+F5 or Cmd+Shift+R)
+* Solution 3: Check browser console for iframe or loading errors
+* Solution 4: Verify your browser allows third-party iframes
+
+**Issue: "No Lightning address found" error**
+
+* Solution 1: Verify the custom field key is exactly `lightning_address`
+  - Go to People → Configuration → User fields
+  - Click on the Lightning address field
+  - Confirm the Field key value is exactly `lightning_address`
+* Solution 2: Check that the agent has a Lightning address in their profile
+  - Go to People → Team → Team members
+  - Open the agent profile
+  - Verify the Lightning address field is populated
+* Solution 3: Verify the "Agent address field key" setting in app configuration
+  - Should be: `user.custom_fields.lightning_address`
+* Solution 4: Use the fallback address setting for testing purposes
+
+**Issue: QR codes not generating**
+
+* Solution 1: Verify "Enable QR Mode" is checked in app settings
+* Solution 2: Check browser console for JavaScript errors
+* Solution 3: Verify the Lightning address format is valid (user@provider.com)
+* Solution 4: Test with a known working Lightning address
+
+**Issue: Tip confirmations not posting to tickets**
+
+* Solution 1: Verify the app has permission to modify tickets
+  - Check app permissions in Admin Center
+* Solution 2: Check the "Private comments" setting in app configuration
+* Solution 3: Review Zendesk audit logs for errors
+  - Admin Center → Activity → Audit log
+* Solution 4: Verify the agent has permission to post comments
+
+**Issue: Payment not completing**
+
+* Solution: This is typically a user-side issue
+  - Verify the user's Lightning wallet has sufficient balance
+  - Ensure the user's wallet supports BOLT11/LNURL payments
+  - Check network connectivity on user's device
+  - Verify the Lightning address is active and accepting payments
+
+==== Updating Zapdesk to a Newer Version
+
+To update an existing Zapdesk installation:
+
+1. Download the new `zapdesk-{version}.zip` from the GitHub Releases page
+2. Navigate to **Admin Center** → **Apps** → **Zendesk Support apps**
+3. Locate **Zapdesk** in the installed apps list
+4. Click the app name or settings icon (gear)
+5. Click **Update** or **Upload new version**
+6. Select the new zip file
+7. Click **Upload**
+8. Review the update details and any new permissions
+9. Click **Update** to confirm
+10. Review any new settings that may have been added
+11. Update configuration as needed
+12. Click **Save** to apply changes
+
+NOTE: Existing settings and configurations are typically preserved during updates. However, review all settings after updating to ensure they are correct.
+
+==== Uninstalling Zapdesk
+
+To remove Zapdesk from your Zendesk instance:
+
+1. Navigate to **Admin Center** → **Apps** → **Zendesk Support apps**
+2. Locate **Zapdesk** in the installed apps list
+3. Click the settings icon (gear) next to the app
+4. Click **Uninstall**
+5. Confirm the uninstallation when prompted
+6. The app will be removed from all ticket sidebars
+
+IMPORTANT: Uninstalling the app does NOT remove:
+
+* The Lightning address custom field (must be deleted manually if desired)
+* Historical ticket comments posted by the app
+* Any configuration data stored in Zendesk
+
+To completely remove all traces:
+
+1. Uninstall the app (steps above)
+2. Delete the custom field:
+   * Go to People → Configuration → User fields
+   * Find "lightning address" field
+   * Click deactivate/delete
+3. Historical comments remain in tickets but will no longer function
 
 === Environment Deployment
 

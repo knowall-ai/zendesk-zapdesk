@@ -66,16 +66,36 @@ jobs:
           body: |
             ## Zapdesk v${{ steps.get_version.outputs.VERSION }}
 
-            ### Installation
-            1. Download `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip`
-            2. Install using Zendesk CLI:
-               ```bash
-               zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
-               ```
+            ### Installation Instructions
 
-            ### Documentation
-            - `SOLUTION_DESIGN.pdf` - Complete solution design and technical documentation (generated automatically)
+            **Step 1: Download the Release**
+            - Download `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip` from the Assets section below
+            - Save it to your computer
 
+            **Step 2: Configure Prerequisites (REQUIRED BEFORE INSTALLATION)**
+
+            Before installing the app, create a custom user field for Lightning addresses:
+            1. Go to **Admin Center** → **People** → **Configuration** → **User fields**
+            2. Click **Add field**
+            3. Configure: **Type**: Text, **Display name**: Lightning Address, **Field key**: `lightning_address` (must be exact)
+            4. Click **Save**
+
+            **Step 3: Upload to Zendesk**
+
+            **Option A: Via Zendesk Admin UI (Recommended)**
+            1. Log in to your Zendesk account as an Administrator
+            2. Navigate to **Admin Center** (gear icon in sidebar)
+            3. Go to **Apps and integrations** → **Zendesk Support apps**
+            4. Click **Upload private app** (top right)
+            5. Click **Choose File** and select the downloaded `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip`
+            6. Click **Upload**
+            7. Review the app information and click **Install**
+
+            **Option B: Via Zendesk CLI**
+
+            ```bash
+            zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
+            ```
             ### Build Artifacts
             - Compiled application bundle
             - Zendesk app manifest
@@ -86,7 +106,27 @@ jobs:
             - Supported languages: English (en), Spanish (es)
             - Language changes automatically when user updates their Zendesk profile
 
-            For deployment instructions, see [DEPLOYMENTS.adoc](docs/DEPLOYMENTS.adoc)
+            **Step 4: Configure App Settings**
+
+            During or after installation, configure:
+            - **Private comments**: Check to make tip notifications internal only (agents only), uncheck for public comments (visible to requester). **Recommended**: Unchecked to acknowledge tips publicly.
+
+            **Step 5: Add Lightning Addresses**
+            1. Go to **Admin Center** → **People** → **Team** → **Team members**
+            2. For each agent: Click name → **Manage in Support** → Add their Lightning address → **Save**
+
+            **Step 6: Verify Installation**
+            - Open any ticket → Look for **Zapdesk** in the right sidebar
+            - The app should display agent information and tip options
+
+            ### What's Included
+            - ✅ Compiled application bundle
+            - ✅ Zendesk app manifest
+            - ✅ English and Spanish translations
+            - ✅ QR code generation for Lightning payments
+
+            ### Documentation
+            For complete documentation, see [README.md](https://github.com/knowall-ai/zendesk-zapdesk/blob/main/README.md)
           draft: false
           prerelease: false
         env:
