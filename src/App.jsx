@@ -37,6 +37,14 @@ export default function App({ client }) {
 
     async function init() {
       try {
+        // Fetch user locale first to load proper translations
+        const localeData = await client.get("currentUser.locale");
+        const userLocale = localeData["currentUser.locale"];
+        console.log("[Zapdesk] User locale:", userLocale);
+
+        // Load translations for user's locale
+        i18n.loadTranslations(userLocale);
+
         const data = await initializeTicketData(client);
 
         setTicketId(data.ticketId);

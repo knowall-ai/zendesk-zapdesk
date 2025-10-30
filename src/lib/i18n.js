@@ -49,7 +49,16 @@ class I18n {
     const keyType = typeof key
     if (keyType !== 'string') throw new Error(`Translation key must be a string, got: ${keyType}`)
 
-    const template = translations[key]
+    // Handle nested keys (e.g., "ui.loading" -> translations.ui.loading)
+    const keys = key.split('.')
+    let template = translations
+    for (const k of keys) {
+      if (!template || typeof template !== 'object') {
+        throw new Error(`Missing translation: ${key}`)
+      }
+      template = template[k]
+    }
+
     if (!template) throw new Error(`Missing translation: ${key}`)
     if (typeof template !== 'string') throw new Error(`Invalid translation for key: ${key}`)
 
@@ -57,10 +66,21 @@ class I18n {
   }
 
   loadTranslations (locale = 'en') {
+    console.log(`[i18n] Loading translations for locale: ${locale}`)
+
     translations = this.tryRequire(locale) ||
                    this.tryRequire(locale.replace(/-.+$/, '')) ||
                    translations ||
                    this.tryRequire('en')
+
+    // Log which locale was actually loaded
+    if (this.tryRequire(locale)) {
+      console.log(`[i18n] Loaded translations: ${locale}`)
+    } else if (this.tryRequire(locale.replace(/-.+$/, ''))) {
+      console.log(`[i18n] Loaded translations: ${locale.replace(/-.+$/, '')} (fallback from ${locale})`)
+    } else {
+      console.log(`[i18n] Loaded translations: en (fallback)`)
+    }
   }
 }
 
