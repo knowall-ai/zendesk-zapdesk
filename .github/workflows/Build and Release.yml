@@ -96,6 +96,15 @@ jobs:
             ```bash
             zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
             ```
+            ### Build Artifacts
+            - Compiled application bundle
+            - Zendesk app manifest
+            - Localization files (English, Spanish)
+
+            ### Features
+            - 🌍 **Multi-language support**: Automatically detects user's Zendesk language
+            - Supported languages: English (en), Spanish (es)
+            - Language changes automatically when user updates their Zendesk profile
 
             **Step 4: Configure App Settings**
 

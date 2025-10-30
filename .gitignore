@@ -5,3 +5,6 @@
 /assets/app.js
 /assets/app.css
 package-lock.json
+
+# Local settings
+.claude/settings.local.json
