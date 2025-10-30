@@ -1,5 +1,11 @@
 import manifest from '../../manifest.json'
 
+// Static map of supported translations (prevents path traversal attacks)
+const SUPPORTED_TRANSLATIONS = {
+  'en': require('../../translations/en.json'),
+  'es': require('../../translations/es.json')
+}
+
 // map to store the key/translation pairs of the loaded language
 let translations
 
@@ -27,15 +33,30 @@ function parsePlaceholders (str, context) {
 
 class I18n {
   constructor (locale) {
-    this.loadTranslations(locale)
+    // Initialize translations synchronously for default locale
+    // Runtime locale changes should use loadTranslations() explicitly
+    const sanitizedLocale = this.sanitizeLocale(locale)
+    const exactMatch = this.tryRequire(sanitizedLocale)
+    const baseLocale = sanitizedLocale.replace(/-.+$/, '')
+    const baseMatch = sanitizedLocale !== baseLocale ? this.tryRequire(baseLocale) : null
+    const fallbackMatch = this.tryRequire('en')
+
+    if (exactMatch) {
+      translations = exactMatch
+    } else if (baseMatch) {
+      translations = baseMatch
+    } else {
+      translations = fallbackMatch
+    }
   }
 
+  /**
+   * Get translation from whitelist map (prevents path traversal attacks)
+   * @param {String} locale - Locale to load
+   * @return {Object|null} Translation object or null if not found
+   */
   tryRequire (locale) {
-    try {
-      return require(`../../translations/${locale}.json`)
-    } catch (e) {
-      return null
-    }
+    return SUPPORTED_TRANSLATIONS[locale] || null
   }
 
   /**
@@ -76,7 +97,12 @@ class I18n {
     return sanitized || 'en'
   }
 
-  loadTranslations (locale = 'en') {
+  /**
+   * Load translations for the specified locale (async for future-proofing)
+   * @param {String} locale - Locale to load
+   * @return {Promise<void>} Promise that resolves when translations are loaded
+   */
+  async loadTranslations (locale = 'en') {
     // Sanitize locale to prevent path traversal attacks
     const sanitizedLocale = this.sanitizeLocale(locale)
 
@@ -104,6 +130,11 @@ class I18n {
     } else {
       translations = fallbackMatch
       loadedLocale = 'en'
+    }
+
+    // Ensure translations were loaded successfully
+    if (!translations) {
+      throw new Error('Failed to load translations')
     }
 
     // Log which locale was actually loaded (only in development)

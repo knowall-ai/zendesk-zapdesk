@@ -45,8 +45,8 @@ export default function App({ client }) {
           console.log("[Zapdesk] User locale:", userLocale);
         }
 
-        // Load translations for user's locale
-        i18n.loadTranslations(userLocale);
+        // Load translations for user's locale (await to prevent race condition)
+        await i18n.loadTranslations(userLocale);
 
         const data = await initializeTicketData(client);
 
