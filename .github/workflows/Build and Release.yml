@@ -72,7 +72,15 @@ jobs:
             - Download `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip` from the Assets section below
             - Save it to your computer
 
-            **Step 2: Upload to Zendesk**
+            **Step 2: Configure Prerequisites (REQUIRED BEFORE INSTALLATION)**
+
+            Before installing the app, create a custom user field for Lightning addresses:
+            1. Go to **Admin Center** → **People** → **Configuration** → **User fields**
+            2. Click **Add field**
+            3. Configure: **Type**: Text, **Display name**: Lightning Address, **Field key**: `lightning_address` (must be exact)
+            4. Click **Save**
+
+            **Step 3: Upload to Zendesk**
 
             **Option A: Via Zendesk Admin UI (Recommended)**
             1. Log in to your Zendesk account as an Administrator
@@ -82,29 +90,24 @@ jobs:
             5. Click **Choose File** and select the downloaded `zapdesk-${{ steps.get_version.outputs.VERSION }}.zip`
             6. Click **Upload**
             7. Review the app information and click **Install**
-            8. Configure app settings:
-               - **Private comments**: Check to make tip notifications internal only, uncheck for public comments
-            9. Click **Install** to complete
 
             **Option B: Via Zendesk CLI**
             ```bash
             zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
             ```
 
-            **Step 3: Configure Prerequisites**
+            **Step 4: Configure App Settings**
 
-            Before using the app, create a custom user field:
-            1. Go to **Admin Center** → **People** → **Configuration** → **User fields**
-            2. Click **Add field**
-            3. Configure: **Type**: Text, **Display name**: Lightning Address, **Field key**: `lightning_address` (exact)
-            4. Click **Save**
+            During or after installation, configure:
+            - **Private comments**: Check to make tip notifications internal only (agents only), uncheck for public comments (visible to requester). **Recommended**: Unchecked to acknowledge tips publicly.
 
-            **Step 4: Add Lightning Addresses**
+            **Step 5: Add Lightning Addresses**
             1. Go to **Admin Center** → **People** → **Team** → **Team members**
             2. For each agent: Click name → **Manage in Support** → Add their Lightning address → **Save**
 
-            **Step 5: Verify**
+            **Step 6: Verify Installation**
             - Open any ticket → Look for **Zapdesk** in the right sidebar
+            - The app should display agent information and tip options
 
             ### What's Included
             - ✅ Compiled application bundle

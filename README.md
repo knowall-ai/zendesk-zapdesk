@@ -46,7 +46,7 @@ Open your Zendesk sandbox → Admin → Apps → Manage → Development → Load
 
 ## Build & Package
 
-```
+```bash
 npm run build          # emits /assets (iframe.html, app.js, app.css)
 zcli apps:package      # produces distributable .zip
 ```
@@ -102,7 +102,7 @@ Before installing the app, you need to create a custom user field for Lightning 
 After installation, configure the app settings:
 
 1. On the app installation page, configure the following settings:
-   - **Private comments**: Check this box to make tip notifications appear as internal notes only. Uncheck to make them public comments visible to customers.
+   - **Private comments**: Check this box to make tip notifications appear as internal notes only (agents only). Uncheck to make them public comments visible to customers. **Recommended**: Unchecked to acknowledge tips publicly.
 2. Click **Install** or **Update** to save settings
 
 ### Step 5: Add Lightning Addresses to Agent Profiles

@@ -208,7 +208,7 @@ If all checks pass, the installation is successful.
 * Solution 1: Verify the custom field key is exactly `lightning_address`
   - Go to People → Configuration → User fields
   - Click on the Lightning address field
-  - Confirm the "Field key" is `lightning_address`
+  - Confirm the Field key value is exactly `lightning_address`
 * Solution 2: Check that the agent has a Lightning address in their profile
   - Go to People → Team → Team members
   - Open the agent profile
