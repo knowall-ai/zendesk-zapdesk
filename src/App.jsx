@@ -45,38 +45,50 @@ export default function App({ client }) {
         setAssignee(data.assignee);
         setLightningAddress(data.lightningAddress);
 
-        // Get current user role to determine if they're a light agent
+        // Get current user role to determine if they're an admin
+        // IMPORTANT: Only admins can read currentUser.role
+        // Light agents and regular agents will get a permission error
         try {
-          const roleData = await client.get('currentUser.role');
-          const role = roleData['currentUser.role'];
+          const userData = await client.get(['currentUser.role', 'currentUser']);
+          const role = userData['currentUser.role'];
+          const currentUser = userData['currentUser'];
+
           setCurrentUserRole(role);
 
           console.log('==================================================');
           console.log('[Zapdesk] LOGGED IN USER ROLE:', role);
+          console.log('[Zapdesk] CURRENT USER DATA:', currentUser);
           console.log('==================================================');
 
-          // Check if user is a light agent
-          // Note: Zendesk API doesn't clearly document light agents,
-          // but we'll check for 'light_agent' or similar role names
-          const isLight = role && (
-            role.toLowerCase().includes('light') ||
-            role.toLowerCase() === 'light_agent'
-          );
-          setIsLightAgent(isLight);
+          // Check if user is an admin
+          // Only admins can post public comments
+          const isAdmin = role && role.toLowerCase() === 'admin';
+
+          // If not admin, treat as light agent (restricted permissions)
+          setIsLightAgent(!isAdmin);
 
           // Set default checkbox state based on role
-          // Admin/full agents: public by default (checked)
-          // Light agents: private by default (unchecked and disabled)
-          setIsPublic(!isLight);
+          // Admin: public by default (checked and enabled)
+          // Non-admin: private by default (unchecked and disabled)
+          setIsPublic(isAdmin);
 
-          console.log('[Zapdesk] Is light agent:', isLight);
-          console.log('[Zapdesk] Public comments by default:', !isLight);
+          console.log('[Zapdesk] Is admin:', isAdmin);
+          console.log('[Zapdesk] Is light agent:', !isAdmin);
+          console.log('[Zapdesk] Public comments by default:', isAdmin);
         } catch (roleErr) {
-          console.warn('[Zapdesk] Could not determine user role:', roleErr);
-          // If we can't determine the role, assume not a light agent
-          setIsLightAgent(false);
-          // Default to public for admins/full agents
-          setIsPublic(true);
+          console.warn('[Zapdesk] Could not determine user role (permission denied):', roleErr);
+
+          // FAIL-SAFE: If we can't read the role, assume they're NOT an admin
+          // This happens for light agents and regular agents who don't have permission
+          // to read currentUser.role
+          setIsLightAgent(true);
+          setCurrentUserRole('unknown (restricted)');
+
+          // Default to PRIVATE (unchecked and disabled) for security
+          setIsPublic(false);
+
+          console.log('[Zapdesk] Role check failed - treating as non-admin (light agent)');
+          console.log('[Zapdesk] Public comments by default: false');
         }
 
         setLoading(false);
