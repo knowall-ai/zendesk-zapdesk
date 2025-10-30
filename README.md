@@ -102,12 +102,7 @@ Before installing the app, you need to create a custom user field for Lightning 
 After installation, configure the app settings:
 
 1. On the app installation page, configure the following settings:
-   - **Tip presets**: Enter comma-separated values in satoshis (e.g., `100,1000,10000`)
-   - **Enable QR Mode**: Check to enable QR code generation for payments
-   - **Agent address field key**: Enter `user.custom_fields.lightning_address`
-   - **Fallback address**: (Optional) Enter a default Lightning address
    - **Ticket post visibility**: Select `public` or `internal` for tip confirmation comments
-   - **Branding**: (Optional) Customize the app title and description
 2. Click **Install** or **Update** to save settings
 
 ### Step 5: Add Lightning Addresses to Agent Profiles
