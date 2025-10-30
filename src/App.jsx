@@ -40,7 +40,10 @@ export default function App({ client }) {
         // Fetch user locale first to load proper translations
         const localeData = await client.get("currentUser.locale");
         const userLocale = localeData["currentUser.locale"];
-        console.log("[Zapdesk] User locale:", userLocale);
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log("[Zapdesk] User locale:", userLocale);
+        }
 
         // Load translations for user's locale
         i18n.loadTranslations(userLocale);
@@ -52,8 +55,11 @@ export default function App({ client }) {
         setLightningAddress(data.lightningAddress);
         setLoading(false);
       } catch (err) {
-        console.error("[Zapdesk] Error initializing:", err);
-        setError(err.message || i18n.t("errors.failedToLoad"));
+        if (process.env.NODE_ENV === 'development') {
+          console.error("[Zapdesk] Error initializing:", err);
+        }
+        // Use fallback string to avoid secondary error if translations not loaded
+        setError(err.message || "Failed to load assignee info.");
         setLoading(false);
       }
     }
@@ -62,7 +68,9 @@ export default function App({ client }) {
   }, [client]);
 
   async function onSelectAmount(amount) {
-    console.log("[amount]", amount);
+    if (process.env.NODE_ENV === 'development') {
+      console.log("[amount]", amount);
+    }
     setSelectedAmount(amount);
 
     if (!isValidLightningAddress(lightningAddress)) {
@@ -89,7 +97,9 @@ export default function App({ client }) {
       setSelectedAmount(null);
       setMessage("");
     } catch (err) {
-      console.error("Failed to post comment", err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Failed to post comment", err);
+      }
       setError(err.message || i18n.t("errors.failedToPost"));
     }
   }

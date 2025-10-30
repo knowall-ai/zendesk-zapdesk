@@ -65,21 +65,58 @@ class I18n {
     return parsePlaceholders(template, context)
   }
 
+  /**
+   * Validates and sanitizes locale string to prevent path traversal attacks
+   * @param {String} locale - Locale string to validate
+   * @return {String} Sanitized locale string
+   */
+  sanitizeLocale (locale) {
+    // Only allow alphanumeric characters and hyphens, max 10 chars
+    const sanitized = locale.replace(/[^a-zA-Z0-9-]/g, '').substring(0, 10)
+    return sanitized || 'en'
+  }
+
   loadTranslations (locale = 'en') {
-    console.log(`[i18n] Loading translations for locale: ${locale}`)
+    // Sanitize locale to prevent path traversal attacks
+    const sanitizedLocale = this.sanitizeLocale(locale)
 
-    translations = this.tryRequire(locale) ||
-                   this.tryRequire(locale.replace(/-.+$/, '')) ||
-                   translations ||
-                   this.tryRequire('en')
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[i18n] Loading translations for locale: ${sanitizedLocale}`)
+    }
 
-    // Log which locale was actually loaded
-    if (this.tryRequire(locale)) {
-      console.log(`[i18n] Loaded translations: ${locale}`)
-    } else if (this.tryRequire(locale.replace(/-.+$/, ''))) {
-      console.log(`[i18n] Loaded translations: ${locale.replace(/-.+$/, '')} (fallback from ${locale})`)
+    // Try loading in priority order, storing results to avoid redundant calls
+    const exactMatch = this.tryRequire(sanitizedLocale)
+    const baseLocale = sanitizedLocale.replace(/-.+$/, '')
+    const baseMatch = sanitizedLocale !== baseLocale ? this.tryRequire(baseLocale) : null
+    const fallbackMatch = this.tryRequire('en')
+
+    // Determine which translation to use
+    let loadedLocale = 'en'
+    if (exactMatch) {
+      translations = exactMatch
+      loadedLocale = sanitizedLocale
+    } else if (baseMatch) {
+      translations = baseMatch
+      loadedLocale = baseLocale
+    } else if (translations) {
+      // Keep existing translations if available
+      loadedLocale = 'existing'
     } else {
-      console.log(`[i18n] Loaded translations: en (fallback)`)
+      translations = fallbackMatch
+      loadedLocale = 'en'
+    }
+
+    // Log which locale was actually loaded (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      if (loadedLocale === sanitizedLocale) {
+        console.log(`[i18n] Loaded translations: ${loadedLocale}`)
+      } else if (loadedLocale === baseLocale) {
+        console.log(`[i18n] Loaded translations: ${loadedLocale} (fallback from ${sanitizedLocale})`)
+      } else if (loadedLocale === 'existing') {
+        console.log(`[i18n] Keeping existing translations`)
+      } else {
+        console.log(`[i18n] Loaded translations: en (fallback)`)
+      }
     }
   }
 }
