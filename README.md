@@ -18,7 +18,7 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 - 🧾 **QR / Invoice** — Generate and display **BOLT11** or **LNURL-pay** target + QR.
 - 💬 **User message** — free-text input appended to the ticket comment.
 - 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
-- ⚙️ **Admin settings** — tip presets, agent address field key, post visibility.
+- ⚙️ **Admin settings** — tip presets, agent address field key, private comments option.
 
 ---
 
@@ -102,7 +102,7 @@ Before installing the app, you need to create a custom user field for Lightning 
 After installation, configure the app settings:
 
 1. On the app installation page, configure the following settings:
-   - **Ticket post visibility**: Select `public` or `internal` for tip confirmation comments
+   - **Private comments**: Check this box to make tip notifications appear as internal notes only. Uncheck to make them public comments visible to customers.
 2. Click **Install** or **Update** to save settings
 
 ### Step 5: Add Lightning Addresses to Agent Profiles
@@ -149,7 +149,7 @@ For each agent who should receive tips:
 
 **Tip confirmations not posting to tickets:**
 - Verify app has permission to post comments
-- Check the "Ticket post visibility" setting
+- Check the "Private comments" setting in app configuration
 - Review Zendesk audit logs for errors
 
 ### Updating Zapdesk
@@ -209,7 +209,7 @@ The workflow will automatically:
   - `showQrMode` (QR/LNURL)
 - Agent address field key: e.g. `user.custom_fields.lightning_address`
 - Fallback address (optional)
-- Ticket post visibility: `public` or `internal`
+- Private comments: Checkbox to make tip notifications internal notes (checked) or public comments (unchecked)
 - Branding (optional): title/description
 
 ## Usage (end-user flow)

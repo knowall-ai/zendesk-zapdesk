@@ -150,9 +150,10 @@ After installation, you need to configure the app settings:
 
 **Optional Settings:**
 
-* **Ticket post visibility**: Select comment visibility for tip confirmations
-  - Options: `public` (visible to requester) or `internal` (agents only)
-  - Recommended: `public` to acknowledge tips publicly
+* **Private comments**: Checkbox to control comment visibility for tip confirmations
+  - Checked: Comments appear as internal notes (agents only)
+  - Unchecked: Comments appear as public (visible to requester)
+  - Recommended: Unchecked to acknowledge tips publicly
 
 1. Click **Install** or **Update** to save the configuration
 
@@ -227,7 +228,7 @@ If all checks pass, the installation is successful.
 
 * Solution 1: Verify the app has permission to modify tickets
   - Check app permissions in Admin Center
-* Solution 2: Check the "Ticket post visibility" setting
+* Solution 2: Check the "Private comments" setting in app configuration
 * Solution 3: Review Zendesk audit logs for errors
   - Admin Center → Activity → Audit log
 * Solution 4: Verify the agent has permission to post comments
