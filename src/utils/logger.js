@@ -1,13 +1,19 @@
 /**
  * Centralized logger utility
- * Only logs in development mode to avoid console pollution in production
+ * - Info logs only in development to avoid console pollution
+ * - Errors always logged (even in production) for debugging
  */
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+// More robust development check for Webpack builds
+// Webpack's DefinePlugin replaces process.env.NODE_ENV at build time
+// Default to development if NODE_ENV is not set (safety fallback)
+const isDevelopment = typeof process !== 'undefined' &&
+                      process.env &&
+                      (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
 
 export const logger = {
   /**
-   * Log general information
+   * Log general information (development only)
    * @param {...any} args - Arguments to log
    */
   log(...args) {
@@ -17,17 +23,16 @@ export const logger = {
   },
 
   /**
-   * Log errors
+   * Log errors (ALWAYS logged, even in production, for debugging)
    * @param {...any} args - Arguments to log
    */
   error(...args) {
-    if (isDevelopment) {
-      console.error(...args);
-    }
+    // Always log errors, even in production, to help with debugging
+    console.error(...args);
   },
 
   /**
-   * Log warnings
+   * Log warnings (development only)
    * @param {...any} args - Arguments to log
    */
   warn(...args) {
@@ -37,7 +42,7 @@ export const logger = {
   },
 
   /**
-   * Log debug information
+   * Log debug information (development only)
    * @param {...any} args - Arguments to log
    */
   debug(...args) {
