@@ -4,12 +4,13 @@
  * - Errors always logged (even in production) for debugging
  */
 
-// More robust development check for Webpack builds
+// Strict development check for Webpack builds
 // Webpack's DefinePlugin replaces process.env.NODE_ENV at build time
-// Default to development if NODE_ENV is not set (safety fallback)
+// Only logs debug info if NODE_ENV is explicitly 'development'
+// If NODE_ENV is undefined/null, treats as production (safe default)
 const isDevelopment = typeof process !== 'undefined' &&
                       process.env &&
-                      (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV);
+                      process.env.NODE_ENV === 'development';
 
 export const logger = {
   /**
