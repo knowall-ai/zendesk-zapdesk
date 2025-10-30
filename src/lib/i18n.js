@@ -1,4 +1,5 @@
 import manifest from '../../manifest.json'
+import logger from '../utils/logger'
 
 // Static map of supported translations (prevents path traversal attacks)
 const SUPPORTED_TRANSLATIONS = {
@@ -106,9 +107,7 @@ class I18n {
     // Sanitize locale to prevent path traversal attacks
     const sanitizedLocale = this.sanitizeLocale(locale)
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[i18n] Loading translations for locale: ${sanitizedLocale}`)
-    }
+    logger.log(`[i18n] Loading translations for locale: ${sanitizedLocale}`)
 
     // Try loading in priority order, storing results to avoid redundant calls
     const exactMatch = this.tryRequire(sanitizedLocale)
@@ -137,17 +136,15 @@ class I18n {
       throw new Error('Failed to load translations')
     }
 
-    // Log which locale was actually loaded (only in development)
-    if (process.env.NODE_ENV === 'development') {
-      if (loadedLocale === sanitizedLocale) {
-        console.log(`[i18n] Loaded translations: ${loadedLocale}`)
-      } else if (loadedLocale === baseLocale) {
-        console.log(`[i18n] Loaded translations: ${loadedLocale} (fallback from ${sanitizedLocale})`)
-      } else if (loadedLocale === 'existing') {
-        console.log(`[i18n] Keeping existing translations`)
-      } else {
-        console.log(`[i18n] Loaded translations: en (fallback)`)
-      }
+    // Log which locale was actually loaded
+    if (loadedLocale === sanitizedLocale) {
+      logger.log(`[i18n] Loaded translations: ${loadedLocale}`)
+    } else if (loadedLocale === baseLocale) {
+      logger.log(`[i18n] Loaded translations: ${loadedLocale} (fallback from ${sanitizedLocale})`)
+    } else if (loadedLocale === 'existing') {
+      logger.log(`[i18n] Keeping existing translations`)
+    } else {
+      logger.log(`[i18n] Loaded translations: en (fallback)`)
     }
   }
 }

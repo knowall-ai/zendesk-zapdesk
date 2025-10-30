@@ -8,11 +8,13 @@ import {
 } from "./services/zendeskService";
 import { isValidLightningAddress } from "./services/lightningService";
 import i18n from "./lib/i18n";
+import logger from "./utils/logger";
 
 const TIP_AMOUNTS = [100, 1000, 10000];
 
 export default function App({ client }) {
   const [loading, setLoading] = useState(true);
+  const [translationsReady, setTranslationsReady] = useState(false);
   const [assignee, setAssignee] = useState({ name: "", id: null, avatar: "" });
   const [lightningAddress, setLightningAddress] = useState("");
   const [selectedAmount, setSelectedAmount] = useState(null);
@@ -41,12 +43,13 @@ export default function App({ client }) {
         const localeData = await client.get("currentUser.locale");
         const userLocale = localeData["currentUser.locale"];
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log("[Zapdesk] User locale:", userLocale);
-        }
+        logger.log("[Zapdesk] User locale:", userLocale);
 
         // Load translations for user's locale (await to prevent race condition)
         await i18n.loadTranslations(userLocale);
+
+        // Mark translations as ready before continuing
+        setTranslationsReady(true);
 
         const data = await initializeTicketData(client);
 
@@ -55,11 +58,9 @@ export default function App({ client }) {
         setLightningAddress(data.lightningAddress);
         setLoading(false);
       } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error("[Zapdesk] Error initializing:", err);
-        }
-        // Use fallback string to avoid secondary error if translations not loaded
-        setError(err.message || "Failed to load assignee info.");
+        logger.error("[Zapdesk] Error initializing:", err);
+        // Use bilingual fallback to avoid secondary error if translations not loaded
+        setError(err.message || "Failed to load assignee info. / Error al cargar información del agente.");
         setLoading(false);
       }
     }
@@ -68,9 +69,7 @@ export default function App({ client }) {
   }, [client]);
 
   async function onSelectAmount(amount) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log("[amount]", amount);
-    }
+    logger.log("[amount]", amount);
     setSelectedAmount(amount);
 
     if (!isValidLightningAddress(lightningAddress)) {
@@ -97,14 +96,15 @@ export default function App({ client }) {
       setSelectedAmount(null);
       setMessage("");
     } catch (err) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error("Failed to post comment", err);
-      }
+      logger.error("Failed to post comment", err);
       setError(err.message || i18n.t("errors.failedToPost"));
     }
   }
 
-  if (loading) return <div className="zd-loading">{i18n.t("ui.loading")}</div>;
+  // Show loading state if still loading or translations not ready
+  if (loading || !translationsReady) {
+    return <div className="zd-loading">Loading… / Cargando…</div>;
+  }
   return (
     <div className="zd-container">
       <header className="zd-header">
