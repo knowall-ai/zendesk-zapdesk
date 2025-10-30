@@ -92,6 +92,7 @@ jobs:
             7. Review the app information and click **Install**
 
             **Option B: Via Zendesk CLI**
+
             ```bash
             zcli apps:create zapdesk-${{ steps.get_version.outputs.VERSION }}.zip
             ```
