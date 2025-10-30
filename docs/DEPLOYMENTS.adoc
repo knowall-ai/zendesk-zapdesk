@@ -241,3 +241,93 @@ The `npm version` command automatically:
 * Verify settings are preserved
 * Check user data integrity
 * Monitor for additional errors
+
+=== Multi-Language Support
+
+Zapdesk includes automatic language detection and localization based on Zendesk user preferences.
+
+==== Supported Languages
+
+* **English** (`en`) - Default language
+* **Spanish** (`es`) - Full translation
+
+==== How It Works
+
+The app automatically:
+
+1. Fetches the current user's locale from Zendesk (`currentUser.locale`)
+2. Loads the appropriate translation file from `/dist/translations/`
+3. Falls back to English if the language is not supported
+4. Handles locale variants (e.g., `es-MX` → `es` → `en`)
+
+==== Testing Language Changes
+
+**For Administrators:**
+
+To test different languages:
+
+1. Log into Zendesk with admin account
+2. Click profile icon (top right) → **View profile**
+3. Click **Edit profile**
+4. Change **Language** to desired language (e.g., Español)
+5. Click **Save**
+6. Reload any ticket page
+7. Open Zapdesk app in sidebar - it will display in the selected language
+
+**For End Users:**
+
+Each end user's language preference is automatically detected. Users can change their language:
+
+1. In Zendesk, click profile icon → **My profile**
+2. Change **Language** preference
+3. The app will automatically display in their selected language
+
+==== Technical Implementation
+
+**Translation Files:**
+
+* Location: `/translations/en.json`, `/translations/es.json`
+* Format: Nested JSON structure
+* Loading: Dynamic import at runtime based on user locale
+
+**Console Debugging:**
+
+When the app loads, check browser console for:
+
+```
+[Zapdesk] User locale: es
+[i18n] Loading translations for locale: es
+[i18n] Loaded translations: es
+```
+
+==== Adding New Languages
+
+To add support for additional languages:
+
+1. **Create Translation File:**
+   * Copy `translations/en.json` to `translations/{locale}.json`
+   * Translate all text values (keep keys identical)
+   * Maintain the same JSON structure
+
+2. **Update Manifest:**
+   * Edit `manifest.json`
+   * Add locale to `supportedLocales` array:
+   ```json
+   "supportedLocales": ["en", "es", "fr"]
+   ```
+
+3. **Test:**
+   * Build the app: `npm run build`
+   * Verify translation file is in `dist/translations/`
+   * Change Zendesk user language to test
+
+4. **Deploy:**
+   * Package and upload to Zendesk
+   * Verify locale detection in console logs
+
+**Important Notes:**
+
+* Browser language settings do NOT affect the app
+* Language is determined by Zendesk user profile setting
+* Translation changes require rebuilding and redeploying the app
+* All translation keys must match between language files

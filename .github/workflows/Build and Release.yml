@@ -79,7 +79,12 @@ jobs:
             ### Build Artifacts
             - Compiled application bundle
             - Zendesk app manifest
-            - Localization files
+            - Localization files (English, Spanish)
+
+            ### Features
+            - 🌍 **Multi-language support**: Automatically detects user's Zendesk language
+            - Supported languages: English (en), Spanish (es)
+            - Language changes automatically when user updates their Zendesk profile
 
             For deployment instructions, see [DEPLOYMENTS.adoc](docs/DEPLOYMENTS.adoc)
           draft: false
