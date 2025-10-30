@@ -109,14 +109,14 @@ Before installing the app, you must create a custom user field for Lightning add
 4. Click **Add field** (top right corner)
 5. Configure the new field with the following settings:
    * **Type**: Select `Text`
-   * **Field name**: Enter `lightning address`
-   * **Field key**: Enter `lightning_address` (must be exactly this - case sensitive)
+   * **Display name** (also called "Field name" in UI): Enter `lightning address`
+   * **Field key**: Enter `lightning_address` (must be exactly this - case sensitive, no spaces)
    * **Description**: (Optional) "Agent's Bitcoin Lightning address for receiving tips"
    * **Required**: Leave unchecked
    * **Visible to end users**: Uncheck (internal field only)
 6. Click **Save** to create the field
 
-IMPORTANT: The field key must be exactly `lightning_address` (all lowercase, one word). The app will not function correctly with a different field key.
+IMPORTANT: The **Display name** is what agents see in the UI (can be "lightning address" with a space). The **Field key** is the technical identifier used by the app and must be exactly `lightning_address` (all lowercase, one word, no spaces). The app will not function correctly with a different field key.
 
 ==== Step 3: Install the Zapdesk App to Zendesk
 
@@ -155,7 +155,7 @@ After installation, you need to configure the app settings:
   - Unchecked: Comments appear as public (visible to requester)
   - Recommended: Unchecked to acknowledge tips publicly
 
-1. Click **Install** or **Update** to save the configuration
+3. Click **Install** or **Update** to save the configuration
 
 ==== Step 5: Add Lightning Addresses to Agent Profiles
 
