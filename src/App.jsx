@@ -51,6 +51,10 @@ export default function App({ client }) {
           const role = roleData['currentUser.role'];
           setCurrentUserRole(role);
 
+          console.log('==================================================');
+          console.log('[Zapdesk] LOGGED IN USER ROLE:', role);
+          console.log('==================================================');
+
           // Check if user is a light agent
           // Note: Zendesk API doesn't clearly document light agents,
           // but we'll check for 'light_agent' or similar role names
@@ -59,11 +63,20 @@ export default function App({ client }) {
             role.toLowerCase() === 'light_agent'
           );
           setIsLightAgent(isLight);
-          console.log('[Zapdesk] Current user role:', role, 'Is light agent:', isLight);
+
+          // Set default checkbox state based on role
+          // Admin/full agents: public by default (checked)
+          // Light agents: private by default (unchecked and disabled)
+          setIsPublic(!isLight);
+
+          console.log('[Zapdesk] Is light agent:', isLight);
+          console.log('[Zapdesk] Public comments by default:', !isLight);
         } catch (roleErr) {
           console.warn('[Zapdesk] Could not determine user role:', roleErr);
           // If we can't determine the role, assume not a light agent
           setIsLightAgent(false);
+          // Default to public for admins/full agents
+          setIsPublic(true);
         }
 
         setLoading(false);
@@ -102,10 +115,10 @@ export default function App({ client }) {
         isPublic
       );
 
-      // Reset UI
+      // Reset UI - restore default public state based on user role
       setSelectedAmount(null);
       setMessage("");
-      setIsPublic(false);
+      setIsPublic(!isLightAgent); // Admins/full agents: true, Light agents: false
     } catch (err) {
       console.error("Failed to post comment", err);
       setError(err.message || "Failed to post the comment to the ticket.");
