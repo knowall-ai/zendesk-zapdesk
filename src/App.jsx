@@ -21,6 +21,9 @@ export default function App({ client }) {
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
+  const [isPublic, setIsPublic] = useState(false);
+  const [isLightAgent, setIsLightAgent] = useState(false);
+  const [currentUserRole, setCurrentUserRole] = useState(null);
 
   useEffect(() => {
     if (!client) return;
@@ -56,6 +59,53 @@ export default function App({ client }) {
         setTicketId(data.ticketId);
         setAssignee(data.assignee);
         setLightningAddress(data.lightningAddress);
+
+        // Get current user role to determine if they're an admin
+        // IMPORTANT: Only admins can read currentUser.role
+        // Light agents and regular agents will get a permission error
+        try {
+          const userData = await client.get(['currentUser.role', 'currentUser']);
+          const role = userData['currentUser.role'];
+          const currentUser = userData['currentUser'];
+
+          setCurrentUserRole(role);
+
+          console.log('==================================================');
+          console.log('[Zapdesk] LOGGED IN USER ROLE:', role);
+          console.log('[Zapdesk] CURRENT USER DATA:', currentUser);
+          console.log('==================================================');
+
+          // Check if user is an admin
+          // Only admins can post public comments
+          const isAdmin = role && role.toLowerCase() === 'admin';
+
+          // If not admin, treat as light agent (restricted permissions)
+          setIsLightAgent(!isAdmin);
+
+          // Set default checkbox state based on role
+          // Admin: public by default (checked and enabled)
+          // Non-admin: private by default (unchecked and disabled)
+          setIsPublic(isAdmin);
+
+          console.log('[Zapdesk] Is admin:', isAdmin);
+          console.log('[Zapdesk] Is light agent:', !isAdmin);
+          console.log('[Zapdesk] Public comments by default:', isAdmin);
+        } catch (roleErr) {
+          console.warn('[Zapdesk] Could not determine user role (permission denied):', roleErr);
+
+          // FAIL-SAFE: If we can't read the role, assume they're NOT an admin
+          // This happens for light agents and regular agents who don't have permission
+          // to read currentUser.role
+          setIsLightAgent(true);
+          setCurrentUserRole('unknown (restricted)');
+
+          // Default to PRIVATE (unchecked and disabled) for security
+          setIsPublic(false);
+
+          console.log('[Zapdesk] Role check failed - treating as non-admin (light agent)');
+          console.log('[Zapdesk] Public comments by default: false');
+        }
+
         setLoading(false);
       } catch (err) {
         logger.error("[Zapdesk] Error initializing:", err);
@@ -89,12 +139,14 @@ export default function App({ client }) {
         selectedAmount,
         assignee.name,
         message,
-        lightningAddress
+        lightningAddress,
+        isPublic
       );
 
-      // Reset UI
+      // Reset UI - restore default public state based on user role
       setSelectedAmount(null);
       setMessage("");
+      setIsPublic(!isLightAgent); // Admins/full agents: true, Light agents: false
     } catch (err) {
       logger.error("Failed to post comment", err);
       setError(err.message || i18n.t("errors.failedToPost"));
@@ -164,6 +216,28 @@ export default function App({ client }) {
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
             />
+          </div>
+        )}
+
+        {selectedAmount && (
+          <div className="zd-checkbox-container">
+            <label className="zd-checkbox-label">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+                disabled={isLightAgent}
+                className="zd-checkbox"
+              />
+              <span className={isLightAgent ? "zd-checkbox-text-disabled" : ""}>
+                Make tip comment public (visible to end users)
+              </span>
+            </label>
+            {isLightAgent && (
+              <div className="zd-checkbox-hint">
+                Light agents cannot post public comments
+              </div>
+            )}
           </div>
         )}
 

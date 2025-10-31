@@ -65,6 +65,7 @@ export async function initializeTicketData(client) {
  * @param {string} agentName - Agent's name
  * @param {string} message - Optional tip message
  * @param {string} lightningAddress - Agent's Lightning address
+ * @param {boolean} isPublic - Whether the comment should be public (visible to end users)
  * @returns {Promise<void>}
  */
 export async function postTipComment(
@@ -73,19 +74,15 @@ export async function postTipComment(
   amount,
   agentName,
   message,
-  lightningAddress
+  lightningAddress,
+  isPublic = false
 ) {
   try {
     const body = `Tip: ${amount} sats\nAgent: ${agentName}\nMessage: ${
       message || "(none)"
     }\nLightning Address: ${lightningAddress}`;
 
-    // Get the comment visibility setting from app settings
-    const settings = await client.metadata();
-    const privateComments = settings.settings.private_comments || false;
-    const isPublic = !privateComments; // If checkbox is checked, comments are private
-
-    // Update the ticket by appending a comment with configured visibility
+    // Update the ticket by appending a comment with specified visibility
     await client.request({
       url: `/api/v2/tickets/${ticketId}.json`,
       type: "PUT",

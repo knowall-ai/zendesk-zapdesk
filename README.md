@@ -17,7 +17,7 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 
 - 🧾 **QR / Invoice** — Generate and display **BOLT11** or **LNURL-pay** target + QR.
 - 💬 **User message** — free-text input appended to the ticket comment.
-- 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
+- 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal, agent-controlled per ticket).
 - ⚙️ **Admin settings** — tip presets, agent address field key, private comments option.
 - 🌍 **Multi-language support** — Automatically detects and uses the Zendesk user's language preference (English, Spanish).
 
@@ -213,11 +213,15 @@ The workflow will automatically:
 - Private comments: Checkbox to make tip notifications internal notes (checked) or public comments (unchecked)
 - Branding (optional): title/description
 
+**Note:** Ticket post visibility is now controlled on a per-ticket basis by the agent using a checkbox in the UI, not via app settings.
+
 ## Usage (end-user flow)
 
 - Open ticket → Zapdesk shows presets and a message box (optional).
 - Choose QR (scan/copy) to tip.
-  - On success: The app posts to the ticket (public/internal as configured).
+  - Optionally check "Make tip comment public" to make the tip visible to end users (unchecked by default for internal-only comments).
+  - **Note:** Light agents cannot make tip comments public; the checkbox will be disabled for them.
+  - On success: The app posts to the ticket (public/internal based on checkbox).
 - Agent receives funds to their Lightning Address.
 
 ## Security
