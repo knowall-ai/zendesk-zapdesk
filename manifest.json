@@ -6,6 +6,7 @@
     "url": "https://github.com/knowall-ai/zendesk-zapdesk"
   },
   "defaultLocale": "en",
+  "supportedLocales": ["en", "es"],
   "private": false,
   "location": {
     "support": {
