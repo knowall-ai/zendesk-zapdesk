@@ -223,7 +223,7 @@ export default function App({ client }) {
             </label>
             {isLightAgent && (
               <div className="zd-checkbox-hint">
-                You do not have permission to post public comments
+                Non-admin users cannot make tip comments public; the checkbox will be disabled for them.
               </div>
             )}
           </div>
