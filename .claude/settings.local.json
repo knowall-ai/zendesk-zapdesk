@@ -13,7 +13,10 @@
       "Bash(asciidoctor-pdf:*)",
       "Bash(git restore:*)",
       "Read(//c/Users/Akash Jadhav/Pictures/Screenshots/**)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh pr view:*)"
     ],
     "deny": [],
     "ask": []

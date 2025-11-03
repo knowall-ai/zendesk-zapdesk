@@ -95,8 +95,8 @@ The workflow will automatically:
 
 - Open ticket → Zapdesk shows presets and a message box (optional).
 - Choose QR (scan/copy) to tip.
-  - Optionally check "Make tip comment public" to make the tip visible to end users (unchecked by default for internal-only comments).
-  - **Note:** Light agents cannot make tip comments public; the checkbox will be disabled for them.
+  - Optionally check "Make tip comment public" to make the tip visible to end users (checked by default for admins/agents, unchecked for other roles).
+  - **Note:** Only admins and agents can make tip comments public; the checkbox will be disabled and unchecked for other user roles.
   - On success: The app posts to the ticket (public/internal based on checkbox).
 - Agent receives funds to their Lightning Address.
 
