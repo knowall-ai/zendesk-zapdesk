@@ -66,10 +66,21 @@ export default function App({ client }) {
           const userData = await client.get(['currentUser.role']);
           const role = userData['currentUser.role'];
 
-          console.log('[Zapdesk] User role detected:', role);
+          logger.log('[Zapdesk] User role detected:', role);
+
+          // Handle role as string, object, or number
+          // Some Zendesk configurations return role as an object {id, name} or just an ID number
+          let roleName = role;
+          if (typeof role === 'object' && role !== null) {
+            roleName = role.name || String(role.id);
+          } else if (typeof role !== 'string') {
+            roleName = String(role);
+          }
+
+          // Normalize role name to lowercase for comparison
+          const normalizedRole = roleName && roleName.toLowerCase();
 
           // Check if user is an admin or agent (both can post public comments)
-          const normalizedRole = role && role.toLowerCase();
           const isAdminOrAgent = normalizedRole === 'admin' || normalizedRole === 'agent';
 
           // Users who are not admin/agent have restricted permissions (light agents, etc.)
@@ -80,9 +91,9 @@ export default function App({ client }) {
           // Other roles (light agents, etc.): private by default (unchecked and disabled)
           setIsPublic(isAdminOrAgent);
 
-          console.log('[Zapdesk] Can post public comments:', isAdminOrAgent);
+          logger.log('[Zapdesk] Can post public comments:', isAdminOrAgent);
         } catch (roleErr) {
-          console.warn('[Zapdesk] Could not determine user role:', roleErr);
+          logger.error('[Zapdesk] Could not determine user role:', roleErr);
 
           // FAIL-SAFE: If we can't read the role, restrict to private comments
           // This provides a secure default when role cannot be determined
@@ -91,7 +102,7 @@ export default function App({ client }) {
           // Default to PRIVATE (unchecked and disabled) for security
           setIsPublic(false);
 
-          console.log('[Zapdesk] Role check failed - restricting to private comments');
+          logger.log('[Zapdesk] Role check failed - restricting to private comments');
         }
 
         setLoading(false);
@@ -218,12 +229,12 @@ export default function App({ client }) {
                 className="zd-checkbox"
               />
               <span className={isLightAgent ? "zd-checkbox-text-disabled" : ""}>
-                Make tip comment public (visible to end users)
+                {i18n.t("ui.publicCommentLabel")}
               </span>
             </label>
             {isLightAgent && (
               <div className="zd-checkbox-hint">
-                Non-admin users cannot make tip comments public; the checkbox will be disabled for them.
+                {i18n.t("ui.publicCommentHint")}
               </div>
             )}
           </div>
