@@ -22,7 +22,7 @@ export default function App({ client }) {
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
-  const [isLightAgent, setIsLightAgent] = useState(false);
+  const [canPostPublic, setCanPostPublic] = useState(false);
 
   useEffect(() => {
     if (!client) return;
@@ -81,23 +81,23 @@ export default function App({ client }) {
           const normalizedRole = roleName && roleName.toLowerCase();
 
           // Check if user is an admin or agent (both can post public comments)
-          const isAdminOrAgent = normalizedRole === 'admin' || normalizedRole === 'agent';
+          const canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
 
-          // Users who are not admin/agent have restricted permissions (light agents, etc.)
-          setIsLightAgent(!isAdminOrAgent);
+          // Store permission state
+          setCanPostPublic(canPost);
 
           // Set default checkbox state based on role
           // Admins and agents: public by default (checked and enabled)
           // Other roles (light agents, etc.): private by default (unchecked and disabled)
-          setIsPublic(isAdminOrAgent);
+          setIsPublic(canPost);
 
-          logger.log('[Zapdesk] Can post public comments:', isAdminOrAgent);
+          logger.log('[Zapdesk] Can post public comments:', canPost);
         } catch (roleErr) {
           logger.error('[Zapdesk] Could not determine user role:', roleErr);
 
           // FAIL-SAFE: If we can't read the role, restrict to private comments
           // This provides a secure default when role cannot be determined
-          setIsLightAgent(true);
+          setCanPostPublic(false);
 
           // Default to PRIVATE (unchecked and disabled) for security
           setIsPublic(false);
@@ -145,7 +145,7 @@ export default function App({ client }) {
       // Reset UI - restore default public state based on user role
       setSelectedAmount(null);
       setMessage("");
-      setIsPublic(!isLightAgent); // Admins/agents: true, Restricted users: false
+      setIsPublic(canPostPublic); // Admins/agents: true, Restricted users: false
     } catch (err) {
       logger.error("Failed to post comment", err);
       setError(err.message || i18n.t("errors.failedToPost"));
@@ -225,14 +225,14 @@ export default function App({ client }) {
                 type="checkbox"
                 checked={isPublic}
                 onChange={(e) => setIsPublic(e.target.checked)}
-                disabled={isLightAgent}
+                disabled={!canPostPublic}
                 className="zd-checkbox"
               />
-              <span className={isLightAgent ? "zd-checkbox-text-disabled" : ""}>
+              <span className={!canPostPublic ? "zd-checkbox-text-disabled" : ""}>
                 {i18n.t("ui.publicCommentLabel")}
               </span>
             </label>
-            {isLightAgent && (
+            {!canPostPublic && (
               <div className="zd-checkbox-hint">
                 {i18n.t("ui.publicCommentHint")}
               </div>
