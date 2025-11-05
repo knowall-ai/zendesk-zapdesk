@@ -23,6 +23,7 @@ export default function App({ client }) {
   const [error, setError] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
   const [canPostPublic, setCanPostPublic] = useState(false);
+  const [roleCheckComplete, setRoleCheckComplete] = useState(false);
 
   useEffect(() => {
     if (!client) return;
@@ -62,26 +63,46 @@ export default function App({ client }) {
         // Get current user role to determine permissions for posting public comments
         // IMPORTANT: Role detection may return role names for some users (e.g., 'admin', 'agent')
         // or role IDs for others depending on permissions and Zendesk configuration
+        // PERFORMANCE: Cache role detection to avoid repeated API calls (roles rarely change during session)
+        const ROLE_CACHE_KEY = 'zapdesk_user_role_cache';
+
         try {
-          const userData = await client.get(['currentUser.role']);
-          const role = userData['currentUser.role'];
+          // Check if role is cached in sessionStorage
+          const cachedRoleData = sessionStorage.getItem(ROLE_CACHE_KEY);
+          let canPost = false;
 
-          logger.log('[Zapdesk] User role detected:', role);
+          if (cachedRoleData) {
+            // Use cached role data
+            const cached = JSON.parse(cachedRoleData);
+            canPost = cached.canPostPublic;
+            logger.log('[Zapdesk] Using cached role permissions:', canPost);
+          } else {
+            // Fetch role from API if not cached
+            const userData = await client.get(['currentUser.role']);
+            const role = userData['currentUser.role'];
 
-          // Handle role as string, object, or number
-          // Some Zendesk configurations return role as an object {id, name} or just an ID number
-          let roleName = role;
-          if (typeof role === 'object' && role !== null) {
-            roleName = role.name || String(role.id);
-          } else if (typeof role !== 'string') {
-            roleName = String(role);
+            logger.log('[Zapdesk] User role detected:', role);
+
+            // Handle role as string, object, or number
+            // Some Zendesk configurations return role as an object {id, name} or just an ID number
+            let roleName = role;
+            if (typeof role === 'object' && role !== null) {
+              roleName = role.name || String(role.id);
+            } else if (typeof role !== 'string') {
+              roleName = String(role);
+            }
+
+            // Normalize role name to lowercase for comparison
+            const normalizedRole = (roleName || '').toLowerCase();
+
+            // Check if user is an admin or agent (both can post public comments)
+            canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
+
+            // Cache the role detection result
+            sessionStorage.setItem(ROLE_CACHE_KEY, JSON.stringify({ canPostPublic: canPost }));
+
+            logger.log('[Zapdesk] Can post public comments:', canPost);
           }
-
-          // Normalize role name to lowercase for comparison
-          const normalizedRole = roleName && roleName.toLowerCase();
-
-          // Check if user is an admin or agent (both can post public comments)
-          const canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
 
           // Store permission state
           setCanPostPublic(canPost);
@@ -91,7 +112,8 @@ export default function App({ client }) {
           // Other roles (light agents, etc.): private by default (unchecked and disabled)
           setIsPublic(canPost);
 
-          logger.log('[Zapdesk] Can post public comments:', canPost);
+          // Mark role check as complete
+          setRoleCheckComplete(true);
         } catch (roleErr) {
           logger.error('[Zapdesk] Could not determine user role:', roleErr);
 
@@ -103,6 +125,9 @@ export default function App({ client }) {
           setIsPublic(false);
 
           logger.log('[Zapdesk] Role check failed - restricting to private comments');
+
+          // Mark role check as complete even if it failed
+          setRoleCheckComplete(true);
         }
 
         setLoading(false);
@@ -128,6 +153,7 @@ export default function App({ client }) {
   }
 
   async function markAsPaid() {
+    if (!roleCheckComplete) return setError(i18n.t("errors.pleaseWait", { defaultValue: "Please wait while we verify your permissions..." }));
     if (!ticketId) return setError(i18n.t("errors.noTicketId"));
     if (!selectedAmount) return setError(i18n.t("errors.noTipAmount"));
 
@@ -241,7 +267,11 @@ export default function App({ client }) {
         )}
 
         <div className="zd-actions">
-          <button className="zd-btn zd-btn--primary" onClick={markAsPaid}>
+          <button
+            className="zd-btn zd-btn--primary"
+            onClick={markAsPaid}
+            disabled={!roleCheckComplete}
+          >
             {i18n.t("ui.markAsPaidButton")}
           </button>
         </div>
