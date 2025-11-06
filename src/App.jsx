@@ -63,46 +63,26 @@ export default function App({ client }) {
         // Get current user role to determine permissions for posting public comments
         // IMPORTANT: Role detection may return role names for some users (e.g., 'admin', 'agent')
         // or role IDs for others depending on permissions and Zendesk configuration
-        // PERFORMANCE: Cache role detection to avoid repeated API calls (roles rarely change during session)
-        const ROLE_CACHE_KEY = 'zapdesk_user_role_cache';
-
         try {
-          // Check if role is cached in sessionStorage
-          const cachedRoleData = sessionStorage.getItem(ROLE_CACHE_KEY);
-          let canPost = false;
+          const userData = await client.get(['currentUser.role']);
+          const role = userData['currentUser.role'];
 
-          if (cachedRoleData) {
-            // Use cached role data
-            const cached = JSON.parse(cachedRoleData);
-            canPost = cached.canPostPublic;
-            logger.log('[Zapdesk] Using cached role permissions:', canPost);
-          } else {
-            // Fetch role from API if not cached
-            const userData = await client.get(['currentUser.role']);
-            const role = userData['currentUser.role'];
+          logger.log('[Zapdesk] User role detected:', role);
 
-            logger.log('[Zapdesk] User role detected:', role);
-
-            // Handle role as string, object, or number
-            // Some Zendesk configurations return role as an object {id, name} or just an ID number
-            let roleName = role;
-            if (typeof role === 'object' && role !== null) {
-              roleName = role.name || String(role.id);
-            } else if (typeof role !== 'string') {
-              roleName = String(role);
-            }
-
-            // Normalize role name to lowercase for comparison
-            const normalizedRole = (roleName || '').toLowerCase();
-
-            // Check if user is an admin or agent (both can post public comments)
-            canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
-
-            // Cache the role detection result
-            sessionStorage.setItem(ROLE_CACHE_KEY, JSON.stringify({ canPostPublic: canPost }));
-
-            logger.log('[Zapdesk] Can post public comments:', canPost);
+          // Handle role as string, object, or number
+          // Some Zendesk configurations return role as an object {id, name} or just an ID number
+          let roleName = role;
+          if (typeof role === 'object' && role !== null) {
+            roleName = role.name || String(role.id);
+          } else if (typeof role !== 'string') {
+            roleName = String(role);
           }
+
+          // Normalize role name to lowercase for comparison
+          const normalizedRole = (roleName || '').toLowerCase();
+
+          // Check if user is an admin or agent (both can post public comments)
+          const canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
 
           // Store permission state
           setCanPostPublic(canPost);
@@ -111,6 +91,8 @@ export default function App({ client }) {
           // Admins and agents: public by default (checked and enabled)
           // Other roles (light agents, etc.): private by default (unchecked and disabled)
           setIsPublic(canPost);
+
+          logger.log('[Zapdesk] Can post public comments:', canPost);
 
           // Mark role check as complete
           setRoleCheckComplete(true);
