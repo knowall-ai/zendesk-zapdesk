@@ -23,6 +23,7 @@
     "noLightningAddress": "No se encontró dirección Lightning para el agente.",
     "noTicketId": "ID de ticket no encontrado",
     "noTipAmount": "No se seleccionó monto de propina",
-    "failedToPost": "Error al publicar el comentario en el ticket."
+    "failedToPost": "Error al publicar el comentario en el ticket.",
+    "pleaseWait": "Por favor espere mientras verificamos sus permisos..."
   }
 }

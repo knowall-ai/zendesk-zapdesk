@@ -135,7 +135,7 @@ export default function App({ client }) {
   }
 
   async function markAsPaid() {
-    if (!roleCheckComplete) return setError(i18n.t("errors.pleaseWait", { defaultValue: "Please wait while we verify your permissions..." }));
+    if (!roleCheckComplete) return setError(i18n.t("errors.pleaseWait"));
     if (!ticketId) return setError(i18n.t("errors.noTicketId"));
     if (!selectedAmount) return setError(i18n.t("errors.noTipAmount"));
 

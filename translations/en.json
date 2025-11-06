@@ -23,6 +23,7 @@
     "noLightningAddress": "No Lightning Address found for the agent.",
     "noTicketId": "Ticket ID not found",
     "noTipAmount": "No tip amount selected",
-    "failedToPost": "Failed to post the comment to the ticket."
+    "failedToPost": "Failed to post the comment to the ticket.",
+    "pleaseWait": "Please wait while we verify your permissions..."
   }
 }
