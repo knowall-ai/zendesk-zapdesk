@@ -21,6 +21,9 @@ export default function App({ client }) {
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
+  const [isPublic, setIsPublic] = useState(false);
+  const [canPostPublic, setCanPostPublic] = useState(false);
+  const [roleCheckComplete, setRoleCheckComplete] = useState(false);
 
   useEffect(() => {
     if (!client) return;
@@ -56,6 +59,59 @@ export default function App({ client }) {
         setTicketId(data.ticketId);
         setAssignee(data.assignee);
         setLightningAddress(data.lightningAddress);
+
+        // Get current user role to determine permissions for posting public comments
+        // IMPORTANT: Role detection may return role names for some users (e.g., 'admin', 'agent')
+        // or role IDs for others depending on permissions and Zendesk configuration
+        try {
+          const userData = await client.get(['currentUser.role']);
+          const role = userData['currentUser.role'];
+
+          logger.log('[Zapdesk] User role detected:', role);
+
+          // Handle role as string, object, or number
+          // Some Zendesk configurations return role as an object {id, name} or just an ID number
+          let roleName = role;
+          if (typeof role === 'object' && role !== null) {
+            roleName = role.name || String(role.id);
+          } else if (typeof role !== 'string') {
+            roleName = String(role);
+          }
+
+          // Normalize role name to lowercase for comparison
+          const normalizedRole = (roleName || '').toLowerCase();
+
+          // Check if user is an admin or agent (both can post public comments)
+          const canPost = normalizedRole === 'admin' || normalizedRole === 'agent';
+
+          // Store permission state
+          setCanPostPublic(canPost);
+
+          // Set default checkbox state based on role
+          // Admins and agents: public by default (checked and enabled)
+          // Other roles (light agents, etc.): private by default (unchecked and disabled)
+          setIsPublic(canPost);
+
+          logger.log('[Zapdesk] Can post public comments:', canPost);
+
+          // Mark role check as complete
+          setRoleCheckComplete(true);
+        } catch (roleErr) {
+          logger.error('[Zapdesk] Could not determine user role:', roleErr);
+
+          // FAIL-SAFE: If we can't read the role, restrict to private comments
+          // This provides a secure default when role cannot be determined
+          setCanPostPublic(false);
+
+          // Default to PRIVATE (unchecked and disabled) for security
+          setIsPublic(false);
+
+          logger.log('[Zapdesk] Role check failed - restricting to private comments');
+
+          // Mark role check as complete even if it failed
+          setRoleCheckComplete(true);
+        }
+
         setLoading(false);
       } catch (err) {
         logger.error("[Zapdesk] Error initializing:", err);
@@ -79,6 +135,7 @@ export default function App({ client }) {
   }
 
   async function markAsPaid() {
+    if (!roleCheckComplete) return setError(i18n.t("errors.pleaseWait"));
     if (!ticketId) return setError(i18n.t("errors.noTicketId"));
     if (!selectedAmount) return setError(i18n.t("errors.noTipAmount"));
 
@@ -89,12 +146,14 @@ export default function App({ client }) {
         selectedAmount,
         assignee.name,
         message,
-        lightningAddress
+        lightningAddress,
+        isPublic
       );
 
-      // Reset UI
+      // Reset UI - restore default public state based on user role
       setSelectedAmount(null);
       setMessage("");
+      setIsPublic(canPostPublic); // Admins/agents: true, Restricted users: false
     } catch (err) {
       logger.error("Failed to post comment", err);
       setError(err.message || i18n.t("errors.failedToPost"));
@@ -167,8 +226,38 @@ export default function App({ client }) {
           </div>
         )}
 
+        {selectedAmount && (
+          <div className="zd-checkbox-container">
+            <label
+              htmlFor="public-comment-checkbox"
+              className={`zd-checkbox-label ${!canPostPublic ? "zd-checkbox-label-disabled" : ""}`}
+            >
+              <input
+                id="public-comment-checkbox"
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+                disabled={!canPostPublic}
+                className="zd-checkbox"
+              />
+              <span className={!canPostPublic ? "zd-checkbox-text-disabled" : ""}>
+                {i18n.t("ui.publicCommentLabel")}
+              </span>
+            </label>
+            {!canPostPublic && (
+              <div className="zd-checkbox-hint">
+                {i18n.t("ui.publicCommentHint")}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="zd-actions">
-          <button className="zd-btn zd-btn--primary" onClick={markAsPaid}>
+          <button
+            className="zd-btn zd-btn--primary"
+            onClick={markAsPaid}
+            disabled={!roleCheckComplete}
+          >
             {i18n.t("ui.markAsPaidButton")}
           </button>
         </div>

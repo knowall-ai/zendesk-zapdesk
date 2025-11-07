@@ -17,8 +17,8 @@ A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin L
 
 - 🧾 **QR / Invoice** — Generate and display **BOLT11** or **LNURL-pay** target + QR.
 - 💬 **User message** — free-text input appended to the ticket comment.
-- 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal).
-- ⚙️ **Admin settings** — tip presets, agent address field key, private comments option.
+- 📨 **Ticket update** — after a successful tip, Zapdesk posts a message (public/internal, agent-controlled per ticket).
+- ⚙️ **Admin settings** — tip presets, agent address field key.
 - 🌍 **Multi-language support** — Automatically detects and uses the Zendesk user's language preference (English, Spanish).
 
 ---
@@ -210,14 +210,17 @@ The workflow will automatically:
   - `showQrMode` (QR/LNURL)
 - Agent address field key: e.g. `user.custom_fields.lightning_address`
 - Fallback address (optional)
-- Private comments: Checkbox to make tip notifications internal notes (checked) or public comments (unchecked)
 - Branding (optional): title/description
+
+**Note:** Ticket post visibility is controlled on a per-ticket basis by the agent using a checkbox in the UI. Admins and agents can choose to make tip comments public (visible to end users) or keep them private (internal notes only). Other user roles are restricted to private comments only.
 
 ## Usage (end-user flow)
 
 - Open ticket → Zapdesk shows presets and a message box (optional).
 - Choose QR (scan/copy) to tip.
-  - On success: The app posts to the ticket (public/internal as configured).
+  - Optionally check "Make tip comment public" to make the tip visible to end users (checked by default for admins/agents, unchecked for other roles).
+  - **Note:** Only admins and agents can make tip comments public; the checkbox will be disabled and unchecked for other user roles.
+  - On success: The app posts to the ticket (public/internal based on checkbox).
 - Agent receives funds to their Lightning Address.
 
 ## Security

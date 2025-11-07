@@ -3,6 +3,8 @@
  * Handles all Zendesk API interactions
  */
 
+import logger from "../utils/logger";
+
 /**
  * Initialize the Zendesk client and get ticket/assignee data
  * @param {Object} client - ZAFClient instance
@@ -15,7 +17,7 @@ export async function initializeTicketData(client) {
     const ticketId = data["ticket.id"];
     const assigneeId = data["ticket.assignee.user.id"];
 
-    console.log("[Zendesk Service] Ticket data:", data);
+    logger.log("[Zendesk Service] Ticket data:", data);
 
     if (!assigneeId) {
       throw new Error("To send a Lightning tip, the ticket must be assigned to an agent.");
@@ -29,7 +31,7 @@ export async function initializeTicketData(client) {
     });
 
     const user = userResponse.user;
-    console.log("[Zendesk Service] User data:", user);
+    logger.log("[Zendesk Service] User data:", user);
 
     const assignee = {
       id: user.id,
@@ -52,7 +54,7 @@ export async function initializeTicketData(client) {
       lightningAddress,
     };
   } catch (error) {
-    console.error("[Zendesk Service] Error initializing:", error);
+    logger.error("[Zendesk Service] Error initializing:", error);
     throw error;
   }
 }
@@ -65,6 +67,7 @@ export async function initializeTicketData(client) {
  * @param {string} agentName - Agent's name
  * @param {string} message - Optional tip message
  * @param {string} lightningAddress - Agent's Lightning address
+ * @param {boolean} isPublic - Whether the comment should be public (visible to end users)
  * @returns {Promise<void>}
  */
 export async function postTipComment(
@@ -73,19 +76,15 @@ export async function postTipComment(
   amount,
   agentName,
   message,
-  lightningAddress
+  lightningAddress,
+  isPublic = false
 ) {
   try {
     const body = `Tip: ${amount} sats\nAgent: ${agentName}\nMessage: ${
       message || "(none)"
     }\nLightning Address: ${lightningAddress}`;
 
-    // Get the comment visibility setting from app settings
-    const settings = await client.metadata();
-    const privateComments = settings.settings.private_comments || false;
-    const isPublic = !privateComments; // If checkbox is checked, comments are private
-
-    // Update the ticket by appending a comment with configured visibility
+    // Update the ticket by appending a comment with specified visibility
     await client.request({
       url: `/api/v2/tickets/${ticketId}.json`,
       type: "PUT",
@@ -93,7 +92,7 @@ export async function postTipComment(
       data: JSON.stringify({ ticket: { comment: { body, public: isPublic } } }),
     });
 
-    console.log(`[Zendesk Service] Tip comment posted successfully (${isPublic ? 'public' : 'private'})`);
+    logger.log(`[Zendesk Service] Tip comment posted successfully (${isPublic ? 'public' : 'private'})`);
 
     // Show notification to the user
     await client.invoke(
@@ -101,7 +100,7 @@ export async function postTipComment(
       `Thanks! Your tip of ${amount} sats has been recorded on the ticket.`
     );
   } catch (error) {
-    console.error("[Zendesk Service] Error posting comment:", error);
+    logger.error("[Zendesk Service] Error posting comment:", error);
     throw new Error("Failed to post the comment to the ticket.");
   }
 }
@@ -116,7 +115,7 @@ export async function resizeApp(client, height) {
   try {
     await client.invoke("resize", { height });
   } catch (error) {
-    console.error("[Zendesk Service] Error resizing app:", error);
+    logger.error("[Zendesk Service] Error resizing app:", error);
   }
 }
 

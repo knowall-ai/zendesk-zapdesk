@@ -14,13 +14,16 @@
     "messagePlaceholder": "Thank you for your help!",
     "markAsPaidButton": "Mark as Paid",
     "footer": "This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket.",
-    "satsLabel": "sats"
+    "satsLabel": "sats",
+    "publicCommentLabel": "Make tip comment public (visible to end users)",
+    "publicCommentHint": "You do not have permission to post public comments"
   },
   "errors": {
     "failedToLoad": "Failed to load assignee info.",
     "noLightningAddress": "No Lightning Address found for the agent.",
     "noTicketId": "Ticket ID not found",
     "noTipAmount": "No tip amount selected",
-    "failedToPost": "Failed to post the comment to the ticket."
+    "failedToPost": "Failed to post the comment to the ticket.",
+    "pleaseWait": "Please wait while we verify your permissions..."
   }
 }

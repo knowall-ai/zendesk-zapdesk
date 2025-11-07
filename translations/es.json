@@ -14,13 +14,16 @@
     "messagePlaceholder": "¡Gracias por tu ayuda!",
     "markAsPaidButton": "Marcar como pagado",
     "footer": "Este widget habilita propinas de Bitcoin Lightning Network. Después de pagar mediante código QR, haga clic en Marcar como pagado para registrar la propina en este ticket.",
-    "satsLabel": "sats"
+    "satsLabel": "sats",
+    "publicCommentLabel": "Hacer comentario de propina público (visible para usuarios finales)",
+    "publicCommentHint": "No tiene permiso para publicar comentarios públicos"
   },
   "errors": {
     "failedToLoad": "Error al cargar la información del agente.",
     "noLightningAddress": "No se encontró dirección Lightning para el agente.",
     "noTicketId": "ID de ticket no encontrado",
     "noTipAmount": "No se seleccionó monto de propina",
-    "failedToPost": "Error al publicar el comentario en el ticket."
+    "failedToPost": "Error al publicar el comentario en el ticket.",
+    "pleaseWait": "Por favor espere mientras verificamos sus permisos..."
   }
 }
