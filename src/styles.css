@@ -131,6 +131,14 @@
   cursor: pointer;
   font-size: 14px;
 }
+/* When checkbox is disabled, show not-allowed cursor on entire label */
+.zd-checkbox-label:has(.zd-checkbox:disabled) {
+  cursor: not-allowed;
+}
+/* Fallback for browsers without :has() support */
+.zd-checkbox-label-disabled {
+  cursor: not-allowed;
+}
 .zd-checkbox {
   width: 18px;
   height: 18px;

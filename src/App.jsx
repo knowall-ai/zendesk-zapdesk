@@ -228,7 +228,10 @@ export default function App({ client }) {
 
         {selectedAmount && (
           <div className="zd-checkbox-container">
-            <label htmlFor="public-comment-checkbox" className="zd-checkbox-label">
+            <label
+              htmlFor="public-comment-checkbox"
+              className={`zd-checkbox-label ${!canPostPublic ? "zd-checkbox-label-disabled" : ""}`}
+            >
               <input
                 id="public-comment-checkbox"
                 type="checkbox"
