@@ -13,8 +13,10 @@
     "messageLabel": "Agregar un mensaje (opcional)",
     "messagePlaceholder": "¡Gracias por tu ayuda!",
     "markAsPaidButton": "Marcar como pagado",
+    "copyInvoiceButton": "Copiar factura",
     "footer": "Este widget habilita propinas de Bitcoin Lightning Network. Después de pagar mediante código QR, haga clic en Marcar como pagado para registrar la propina en este ticket.",
     "satsLabel": "sats",
+    "addressLabel": "Dirección Lightning del Agente",
     "publicCommentLabel": "Hacer comentario de propina público (visible para usuarios finales)",
     "publicCommentHint": "No tiene permiso para publicar comentarios públicos"
   },

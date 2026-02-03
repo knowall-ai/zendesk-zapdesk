@@ -10,7 +10,7 @@ import { isValidLightningAddress } from "./services/lightningService";
 import i18n from "./lib/i18n";
 import logger from "./utils/logger";
 
-const TIP_AMOUNTS = [100, 1000, 10000];
+const DEFAULT_TIP_AMOUNTS = [100, 1000, 10000];
 
 export default function App({ client }) {
   const [loading, setLoading] = useState(true);
@@ -18,6 +18,9 @@ export default function App({ client }) {
   const [assignee, setAssignee] = useState({ name: "", id: null, avatar: "" });
   const [lightningAddress, setLightningAddress] = useState("");
   const [selectedAmount, setSelectedAmount] = useState(null);
+  const [tipAmounts, setTipAmounts] = useState(DEFAULT_TIP_AMOUNTS);
+  const [appTitle, setAppTitle] = useState("Zapdesk");
+  const [appDescription, setAppDescription] = useState("");
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
@@ -42,11 +45,30 @@ export default function App({ client }) {
 
     async function init() {
       try {
-        // Fetch user locale first to load proper translations
-        const localeData = await client.get("currentUser.locale");
+        // Fetch app metadata (settings) and user locale
+        const [metadata, localeData] = await Promise.all([
+          client.metadata(),
+          client.get("currentUser.locale")
+        ]);
+        
+        const settings = metadata.settings || {};
         const userLocale = localeData["currentUser.locale"];
 
+        logger.log("[Zapdesk] App settings:", settings);
         logger.log("[Zapdesk] User locale:", userLocale);
+
+        // Apply settings: Title & Description
+        if (settings.title) setAppTitle(settings.title);
+        if (settings.description) setAppDescription(settings.description);
+
+        // Apply settings: Tip Presets
+        if (settings.presets) {
+          const parsedPresets = settings.presets
+            .split(",")
+            .map((s) => parseInt(s.trim()))
+            .filter((n) => !isNaN(n));
+          if (parsedPresets.length > 0) setTipAmounts(parsedPresets);
+        }
 
         // Load translations for user's locale (await to prevent race condition)
         await i18n.loadTranslations(userLocale);
@@ -54,18 +76,32 @@ export default function App({ client }) {
         // Mark translations as ready before continuing
         setTranslationsReady(true);
 
-        const data = await initializeTicketData(client);
+        // Fetch ticket and assignee data
+        const data = await initializeTicketData(client, settings.lightning_address_field);
 
         setTicketId(data.ticketId);
         setAssignee(data.assignee);
-        setLightningAddress(data.lightningAddress);
+        
+        // Use agent's address or fallback
+        const addr = data.lightningAddress || settings.fallback_address || "";
+        setLightningAddress(addr);
 
         // Get current user role to determine permissions for posting public comments
-        // IMPORTANT: Role detection may return role names for some users (e.g., 'admin', 'agent')
-        // or role IDs for others depending on permissions and Zendesk configuration
+        // Performance optimization: check session cache first (Issue #24)
         try {
-          const userData = await client.get(['currentUser.role']);
-          const role = userData['currentUser.role'];
+          let role;
+          const cachedRoleData = sessionStorage.getItem("zapdesk_user_role");
+
+          if (cachedRoleData) {
+            const parsed = JSON.parse(cachedRoleData);
+            role = parsed["currentUser.role"];
+            logger.log("[Zapdesk] Using cached user role:", role);
+          } else {
+            const userData = await client.get(["currentUser.role"]);
+            role = userData["currentUser.role"];
+            sessionStorage.setItem("zapdesk_user_role", JSON.stringify(userData));
+            logger.log("[Zapdesk] User role detected and cached:", role);
+          }
 
           logger.log('[Zapdesk] User role detected:', role);
 
@@ -167,7 +203,8 @@ export default function App({ client }) {
   return (
     <div className="zd-container">
       <header className="zd-header">
-        <h2 className="zd-title">{i18n.t("ui.title")}</h2>
+        <h2 className="zd-title">{appTitle}</h2>
+        {appDescription && <div className="zd-description">{appDescription}</div>}
         <div className="zd-agent">
           {assignee.avatar ? (
             <img src={assignee.avatar} alt="agent" className="zd-avatar" />
@@ -185,7 +222,7 @@ export default function App({ client }) {
 
       <div className="zd-body">
         <div className="zd-tip-buttons">
-          {TIP_AMOUNTS.map((a) => (
+          {tipAmounts.map((a) => (
             <button
               key={a}
               className={`zd-btn ${
@@ -198,12 +235,27 @@ export default function App({ client }) {
           ))}
         </div>
 
+        <div className="zd-address-input">
+          <label htmlFor="custom-address" className="zd-label">
+            {i18n.t("ui.addressLabel", { defaultValue: "Agent Lightning Address" })}
+          </label>
+          <input
+            id="custom-address"
+            type="text"
+            className="zd-input"
+            placeholder="user@provider.com"
+            value={lightningAddress}
+            onChange={(e) => setLightningAddress(e.target.value)}
+          />
+        </div>
+
         {selectedAmount && (
           <div className="zd-qr-area">
             <div className="zd-qr-preview">
               <LightningQR
                 address={lightningAddress}
                 amountSats={selectedAmount}
+                message={message}
                 size={220}
               />
             </div>

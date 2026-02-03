@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@zendeskgarden/css-bedrock@7.0.21,npm/@zendeskgarden/css-utilities@4.3.0">
+  <link rel="stylesheet" href="./dist/assets/app.css" />
+  <script>
+    // MOCK ZAFClient
+    window.ZAFClient = {
+      init: function() {
+        return {
+          get: function(path) {
+            console.log("Mock get:", path);
+            if (path === "currentUser.locale" || path[0] === "currentUser.locale") {
+              return Promise.resolve({ "currentUser.locale": "en" });
+            }
+            if (path.includes("ticket.id")) {
+                return Promise.resolve({ "ticket.id": "123", "ticket.assignee.user.id": "456" });
+            }
+            if (path.includes("currentUser.role")) {
+                return Promise.resolve({ "currentUser.role": "admin" });
+            }
+            return Promise.resolve({});
+          },
+          request: function(options) {
+            console.log("Mock request:", options);
+            if (options.url.includes("/api/v2/users/456.json")) {
+                return Promise.resolve({
+                    user: {
+                        id: 456,
+                        name: "Mock Agent",
+                        photo: { content_url: "https://via.placeholder.com/48" },
+                        user_fields: {
+                            lightning_address: "agent@getalby.com"
+                        }
+                    }
+                });
+            }
+            return Promise.resolve({});
+          },
+          invoke: function(cmd, args) {
+            console.log("Mock invoke:", cmd, args);
+            return Promise.resolve({});
+          },
+          metadata: function() {
+              return Promise.resolve({
+                  settings: {
+                      presets: "100,1000,5000",
+                      lightning_address_field: "lightning_address",
+                      title: "Zapdesk Mock",
+                      description: "Testing the UI layout"
+                  }
+              });
+          }
+        };
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="./dist/assets/app.js"></script>
+</body>
+</html>

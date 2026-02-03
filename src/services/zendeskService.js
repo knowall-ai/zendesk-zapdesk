@@ -8,9 +8,10 @@ import logger from "../utils/logger";
 /**
  * Initialize the Zendesk client and get ticket/assignee data
  * @param {Object} client - ZAFClient instance
+ * @param {string} fieldKey - Custom field key for Lightning Address
  * @returns {Promise<Object>} Object containing ticketId, assigneeId, and assignee details
  */
-export async function initializeTicketData(client) {
+export async function initializeTicketData(client, fieldKey = "lightning_address") {
   try {
     // Step 1: Get ticket and assignee ID
     const data = await client.get(["ticket.id", "ticket.assignee.user.id"]);
@@ -40,9 +41,11 @@ export async function initializeTicketData(client) {
     };
 
     // Step 3: Get Lightning Address from custom field
-    // Check both 'lightning_address' (canonical underscore format) and 'lightningaddress' (no underscore)
-    // to handle inconsistent field naming in different Zendesk configurations
+    // Priority 1: User-specified field key (from settings)
+    // Priority 2: Canonical 'lightning_address'
+    // Priority 3: Common variant 'lightningaddress'
     const lightningAddress =
+      user.user_fields?.[fieldKey] ||
       user.user_fields?.lightning_address ||
       user.user_fields?.lightningaddress ||
       "";

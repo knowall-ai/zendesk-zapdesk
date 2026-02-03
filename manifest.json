@@ -18,5 +18,36 @@
   },
   "version": "1.0",
   "frameworkVersion": "2.0",
-  "parameters": []
+  "parameters": [
+    {
+      "name": "presets",
+      "type": "text",
+      "required": false,
+      "default": "100,1000,10000"
+    },
+    {
+      "name": "lightning_address_field",
+      "type": "text",
+      "required": false,
+      "default": "lightning_address"
+    },
+    {
+      "name": "fallback_address",
+      "type": "text",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "title",
+      "type": "text",
+      "required": false,
+      "default": "Zapdesk"
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "required": false,
+      "default": "Support our team with a Bitcoin Lightning tip!"
+    }
+  ]
 }

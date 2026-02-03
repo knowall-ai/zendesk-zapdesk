@@ -19,6 +19,12 @@
   margin: 0;
   text-align: center;
 }
+.zd-description {
+  font-size: 13px;
+  color: #444;
+  text-align: center;
+  margin-top: 4px;
+}
 .zd-agent {
   display: flex;
   gap: 12px;
@@ -58,6 +64,18 @@
   border-color: #0067b8;
   background: #e6f0fb;
 }
+.zd-btn--secondary {
+  background: #f8f9fa;
+  color: #333;
+  border-color: #ddd;
+}
+.zd-btn--secondary:hover {
+  background: #e9ecef;
+}
+.zd-btn--small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
 .zd-btn--primary {
   background: #0067b8;
   color: #fff;
@@ -81,6 +99,16 @@
   display: flex;
   gap: 12px;
   margin-top: 12px;
+  justify-content: center;
+}
+.zd-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.zd-qr-actions {
+  display: flex;
   justify-content: center;
 }
 .zd-message-input {
