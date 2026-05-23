@@ -13,6 +13,9 @@
     "messageLabel": "Agregar un mensaje (opcional)",
     "messagePlaceholder": "¡Gracias por tu ayuda!",
     "markAsPaidButton": "Marcar como pagado",
+    "paymentStringLabel": "Cadena de pago",
+    "copyPaymentButton": "Copiar cadena de pago",
+    "copiedButton": "Copiado",
     "footer": "Este widget habilita propinas de Bitcoin Lightning Network. Después de pagar mediante código QR, haga clic en Marcar como pagado para registrar la propina en este ticket.",
     "satsLabel": "sats",
     "publicCommentLabel": "Hacer comentario de propina público (visible para usuarios finales)",
@@ -24,6 +27,7 @@
     "noTicketId": "ID de ticket no encontrado",
     "noTipAmount": "No se seleccionó monto de propina",
     "failedToPost": "Error al publicar el comentario en el ticket.",
+    "failedToCopy": "Error al copiar la cadena de pago.",
     "pleaseWait": "Por favor espere mientras verificamos sus permisos..."
   }
 }

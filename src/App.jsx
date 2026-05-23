@@ -18,6 +18,8 @@ export default function App({ client }) {
   const [assignee, setAssignee] = useState({ name: "", id: null, avatar: "" });
   const [lightningAddress, setLightningAddress] = useState("");
   const [selectedAmount, setSelectedAmount] = useState(null);
+  const [paymentString, setPaymentString] = useState("");
+  const [copiedPaymentString, setCopiedPaymentString] = useState(false);
   const [message, setMessage] = useState("");
   const [ticketId, setTicketId] = useState(null);
   const [error, setError] = useState(null);
@@ -127,10 +129,24 @@ export default function App({ client }) {
   async function onSelectAmount(amount) {
     logger.log("[amount]", amount);
     setSelectedAmount(amount);
+    setPaymentString("");
+    setCopiedPaymentString(false);
 
     if (!isValidLightningAddress(lightningAddress)) {
       setError(i18n.t("errors.noLightningAddress"));
       return;
+    }
+  }
+
+  async function copyPaymentString() {
+    if (!paymentString) return;
+
+    try {
+      await navigator.clipboard.writeText(paymentString);
+      setCopiedPaymentString(true);
+    } catch (err) {
+      logger.error("Failed to copy payment string", err);
+      setError(i18n.t("errors.failedToCopy"));
     }
   }
 
@@ -152,6 +168,8 @@ export default function App({ client }) {
 
       // Reset UI - restore default public state based on user role
       setSelectedAmount(null);
+      setPaymentString("");
+      setCopiedPaymentString(false);
       setMessage("");
       setIsPublic(canPostPublic); // Admins/agents: true, Restricted users: false
     } catch (err) {
@@ -205,8 +223,31 @@ export default function App({ client }) {
                 address={lightningAddress}
                 amountSats={selectedAmount}
                 size={220}
+                onPaymentString={setPaymentString}
               />
             </div>
+          </div>
+        )}
+
+        {selectedAmount && paymentString && (
+          <div className="zd-payment-string">
+            <label htmlFor="payment-string" className="zd-label">
+              {i18n.t("ui.paymentStringLabel")}
+            </label>
+            <textarea
+              id="payment-string"
+              className="zd-textarea zd-payment-textarea"
+              value={paymentString}
+              readOnly
+              rows={3}
+            />
+            <button
+              type="button"
+              className="zd-btn"
+              onClick={copyPaymentString}
+            >
+              {copiedPaymentString ? i18n.t("ui.copiedButton") : i18n.t("ui.copyPaymentButton")}
+            </button>
           </div>
         )}
 

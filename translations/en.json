@@ -13,6 +13,9 @@
     "messageLabel": "Add a message (optional)",
     "messagePlaceholder": "Thank you for your help!",
     "markAsPaidButton": "Mark as Paid",
+    "paymentStringLabel": "Payment string",
+    "copyPaymentButton": "Copy payment string",
+    "copiedButton": "Copied",
     "footer": "This widget enables Bitcoin Lightning Network tips. After paying via QR code, click Mark as Paid to record the tip on this ticket.",
     "satsLabel": "sats",
     "publicCommentLabel": "Make tip comment public (visible to end users)",
@@ -24,6 +27,7 @@
     "noTicketId": "Ticket ID not found",
     "noTipAmount": "No tip amount selected",
     "failedToPost": "Failed to post the comment to the ticket.",
+    "failedToCopy": "Failed to copy the payment string.",
     "pleaseWait": "Please wait while we verify your permissions..."
   }
 }
