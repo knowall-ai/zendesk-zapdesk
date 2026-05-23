@@ -1,47 +1,79 @@
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 
-const LightningInvoiceQR = ({ address, amountSats, size = 220 }) => {
-  const [invoice, setInvoice] = useState(null);
+const buildLnurlEndpoint = (address) => {
+  if (!address || !address.includes("@")) {
+    throw new Error("Invalid Lightning Address");
+  }
+
+  const [name, domain] = address.split("@");
+  if (!name || !domain) {
+    throw new Error("Invalid Lightning Address");
+  }
+
+  return `https://${domain}/.well-known/lnurlp/${encodeURIComponent(name)}`;
+};
+
+const LightningInvoiceQR = ({ address, amountSats, size = 220, onPaymentString }) => {
+  const [paymentString, setPaymentString] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchInvoice = async () => {
       try {
-        if (!address.includes("@"))
-          throw new Error("Invalid Lightning Address");
+        setError(null);
+        setPaymentString(null);
+        onPaymentString?.("");
 
-        const [name, domain] = address.split("@");
-        const lnurlp = `https://${domain}/.well-known/lnurlp/${encodeURIComponent(
-          name
-        )}`;
+        const lnurlp = buildLnurlEndpoint(address);
         const metaRes = await fetch(lnurlp);
-        const meta = await metaRes.json();
+        if (!metaRes.ok) throw new Error("Could not load LNURL metadata");
 
+        const meta = await metaRes.json();
         if (!meta.callback) throw new Error("No LNURL callback found");
 
         const amountMsat = amountSats * 1000;
-        const invRes = await fetch(`${meta.callback}?amount=${amountMsat}`);
-        const { pr } = await invRes.json();
+        const callbackUrl = new URL(meta.callback);
+        callbackUrl.searchParams.set("amount", String(amountMsat));
 
-        if (!pr) throw new Error("No invoice received from server");
+        const invRes = await fetch(callbackUrl.toString());
+        if (!invRes.ok) throw new Error("Could not create invoice");
 
-        setInvoice(`lightning:${pr}`);
+        const invoice = await invRes.json();
+        const stringToPay = invoice.pr || invoice.lnurl || callbackUrl.toString();
+        if (!stringToPay) throw new Error("No payment string received from server");
+
+        const uri = stringToPay.toLowerCase().startsWith("lightning:")
+          ? stringToPay
+          : `lightning:${stringToPay}`;
+
+        if (!cancelled) {
+          setPaymentString(uri);
+          onPaymentString?.(uri);
+        }
       } catch (err) {
-        console.error(err);
-        setError(err.message);
+        if (!cancelled) {
+          setError(err.message);
+          onPaymentString?.("");
+        }
       }
     };
 
     fetchInvoice();
-  }, [address, amountSats]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address, amountSats, onPaymentString]);
 
   if (error) return <div className="zd-error">⚠️ {error}</div>;
-  if (!invoice) return <p>Loading invoice...</p>;
+  if (!paymentString) return <p>Loading invoice...</p>;
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <QRCodeSVG value={invoice} size={size} />
+    <div className="zd-qr-code">
+      <QRCodeSVG value={paymentString} size={size} />
     </div>
   );
 };

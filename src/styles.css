@@ -158,3 +158,18 @@
   padding-left: 26px;
   font-style: italic;
 }
+.zd-payment-string {
+  margin-top: 12px;
+}
+.zd-payment-textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+.zd-qr-code {
+  display: inline-block;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
