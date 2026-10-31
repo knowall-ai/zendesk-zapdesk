@@ -1,5 +1,7 @@
 # Zapdesk — Zendesk Lightning Tips
 
+[![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/knowall-ai/zendesk-zapdesk?label=CodeRabbit+Reviews&labelColor=171717&color=FF570A)](https://coderabbit.ai)
+
 A Zendesk (ZAF v2) sidebar app that lets **end-users tip agents** with Bitcoin Lightning.
 
 - **Wallet-agnostic**: **QR (BOLT11/LNURL-pay)** payment methods.
